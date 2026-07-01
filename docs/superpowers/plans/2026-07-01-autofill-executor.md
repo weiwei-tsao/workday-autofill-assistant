@@ -229,7 +229,7 @@ export function autofillFields(matches: FieldMatch[], profile: Profile): Autofil
   let needsReview = 0
 
   for (const match of matches) {
-    if (match.canonicalKey === null) continue
+    if (match.canonicalKey === null || match.confidence === 'low') continue
     detected++
 
     if (match.confidence === 'high') {
