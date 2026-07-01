@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { installChromeRuntimeMock } from '../../tests/chrome-runtime-mock'
 import { App } from './App'
 
@@ -9,6 +9,16 @@ describe('Side Panel App', () => {
   })
 
   it('shows "No Workday page detected." when nothing responds to the status query', async () => {
+    render(<App />)
+
+    expect(await screen.findByText('No Workday page detected.')).toBeInTheDocument()
+  })
+
+  it('shows "No Workday page detected." when no content script is listening on the tab (sendMessage rejects)', async () => {
+    vi.spyOn(chrome.tabs, 'sendMessage').mockRejectedValueOnce(
+      new Error('Could not establish connection. Receiving end does not exist.')
+    )
+
     render(<App />)
 
     expect(await screen.findByText('No Workday page detected.')).toBeInTheDocument()

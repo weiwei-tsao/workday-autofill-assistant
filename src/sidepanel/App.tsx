@@ -15,11 +15,18 @@ export function App() {
         if (!cancelled) setStatus('not-workday')
         return
       }
-      const response = (await chrome.tabs.sendMessage(tab.id, {
-        type: 'GET_PAGE_STATUS',
-      })) as PageStatusMessage | undefined
-      if (!cancelled) {
-        setStatus(response?.isWorkdayPage ? 'workday-detected' : 'not-workday')
+      try {
+        const response = (await chrome.tabs.sendMessage(tab.id, {
+          type: 'GET_PAGE_STATUS',
+        })) as PageStatusMessage | undefined
+        if (!cancelled) {
+          setStatus(response?.isWorkdayPage ? 'workday-detected' : 'not-workday')
+        }
+      } catch {
+        // No content script is listening on this tab — it only injects on
+        // *.myworkdayjobs.com, so any other page rejects here rather than
+        // resolving. Treat that the same as "not a Workday page".
+        if (!cancelled) setStatus('not-workday')
       }
     }
 
