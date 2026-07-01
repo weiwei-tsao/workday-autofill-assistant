@@ -561,7 +561,7 @@ git commit -m "feat: add generic CRUD list repository over chrome.storage.local"
 
 **Interfaces:**
 - Consumes: `getLocal`/`setLocal` from Task 4.
-- Produces: `Profile` interface; `getProfile(): Promise<Profile | undefined>`; `saveProfile(profile: Profile): Promise<void>`. Consumed by Task 10 (`useProfile`) and Task 12 (`PersonalInfoPage`).
+- Produces: `Profile` interface; `getProfile(): Promise<Profile | undefined>`; `saveProfile(profile: Profile): Promise<void>`. Consumed by Task 10 (`useProfile`) and Task 13 (`PersonalInfoPage`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -672,7 +672,7 @@ git commit -m "feat: add Profile type and single-object storage repository"
 
 **Interfaces:**
 - Consumes: `createListRepository` from Task 5.
-- Produces: `WorkExperience` interface; `workExperienceRepository` (same shape as `createListRepository`'s return value). Consumed by Task 13 (`WorkExperiencePage`).
+- Produces: `WorkExperience` interface; `workExperienceRepository` (same shape as `createListRepository`'s return value). Consumed by Task 14 (`WorkExperiencePage`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -766,7 +766,7 @@ git commit -m "feat: add WorkExperience type and list repository"
 
 **Interfaces:**
 - Consumes: `createListRepository` from Task 5.
-- Produces: `Education` interface; `educationRepository`. Consumed by Task 14 (`EducationPage`).
+- Produces: `Education` interface; `educationRepository`. Consumed by Task 15 (`EducationPage`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -857,7 +857,7 @@ git commit -m "feat: add Education type and list repository"
 
 **Interfaces:**
 - Consumes: `createListRepository` from Task 5.
-- Produces: `AnswerType`, `AnswerBankEntry` interface; `answerBankRepository`. Consumed by Task 15 (`AnswerBankPage`).
+- Produces: `AnswerType`, `AnswerBankEntry` interface; `answerBankRepository`. Consumed by Task 16 (`AnswerBankPage`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -951,7 +951,7 @@ git commit -m "feat: add AnswerBankEntry type and list repository"
 
 **Interfaces:**
 - Consumes: `getProfile`, `saveProfile` from Task 6.
-- Produces: `useProfile(): { profile: Profile | undefined; isLoading: boolean; reload: () => Promise<void> }`. Consumed by Task 12 (`PersonalInfoPage`).
+- Produces: `useProfile(): { profile: Profile | undefined; isLoading: boolean; reload: () => Promise<void> }`. Consumed by Task 13 (`PersonalInfoPage`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1055,7 +1055,7 @@ git commit -m "feat: add useProfile hook reactive to chrome.storage changes"
 
 **Interfaces:**
 - Consumes: any repository shaped `{ list(): Promise<T[]> }` (Tasks 5, 7, 8, 9 all satisfy this).
-- Produces: `useStorageList<T>(storageKey: string, repository: { list(): Promise<T[]> }): { items: T[]; isLoading: boolean; reload: () => Promise<void> }`. Consumed by Tasks 13, 14, 15.
+- Produces: `useStorageList<T>(storageKey: string, repository: { list(): Promise<T[]> }): { items: T[]; isLoading: boolean; reload: () => Promise<void> }`. Consumed directly by Task 12 (`useEntityCrudForm`), which Tasks 14, 15, 16 use in turn.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1145,7 +1145,171 @@ git commit -m "feat: add useStorageList hook reactive to chrome.storage changes"
 
 ---
 
-### Task 12: `PersonalInfoPage`
+### Task 12: `useEntityCrudForm` hook
+
+**Files:**
+- Create: `src/shared/storage/use-entity-crud-form.ts`
+- Test: `src/shared/storage/use-entity-crud-form.test.tsx`
+
+**Interfaces:**
+- Consumes: `useStorageList` (Task 11); any repository shaped `{ list, add, update, remove }` (Tasks 7, 8, 9 all satisfy this).
+- Produces: `useEntityCrudForm<T extends { id: string }, TFormValues>(storageKey: string, repository: { list(): Promise<T[]>; add(item: T): Promise<void>; update(id: string, patch: Partial<T>): Promise<void>; remove(id: string): Promise<void> }, emptyValues: TFormValues, reset: (values: TFormValues) => void): { items: T[]; editingId: string | null; submit: (values: TFormValues) => Promise<void>; startEdit: (item: T) => void; remove: (id: string) => Promise<void> }`. This centralizes the add/edit/delete control flow that Tasks 14, 15, and 16 (WorkExperiencePage, EducationPage, AnswerBankPage) would otherwise each duplicate — those tasks consume this hook instead of reimplementing `editingId` state, submit branching, and reload.
+
+- [ ] **Step 1: Write the failing test**
+
+`src/shared/storage/use-entity-crud-form.test.tsx`:
+```tsx
+import { act, renderHook, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { installChromeStorageMock } from '../../../tests/chrome-storage-mock'
+import { createListRepository } from './list-repository'
+import { useEntityCrudForm } from './use-entity-crud-form'
+
+interface Widget {
+  id: string
+  name: string
+}
+
+interface WidgetFormValues {
+  name: string
+}
+
+beforeEach(() => {
+  installChromeStorageMock()
+})
+
+describe('useEntityCrudForm', () => {
+  it('adds a new item on submit when not editing', async () => {
+    const repository = createListRepository<Widget>('widgets')
+    const reset = vi.fn()
+    const { result } = renderHook(() =>
+      useEntityCrudForm<Widget, WidgetFormValues>('widgets', repository, { name: '' }, reset)
+    )
+
+    await waitFor(() => expect(result.current.items).toEqual([]))
+
+    await act(async () => {
+      await result.current.submit({ name: 'First' })
+    })
+
+    await waitFor(() => expect(result.current.items).toHaveLength(1))
+    expect(result.current.items[0]).toMatchObject({ name: 'First' })
+    expect(reset).toHaveBeenCalledWith({ name: '' })
+  })
+
+  it('updates the item being edited, then clears editing state', async () => {
+    const repository = createListRepository<Widget>('widgets')
+    await repository.add({ id: '1', name: 'First' })
+    const reset = vi.fn()
+    const { result } = renderHook(() =>
+      useEntityCrudForm<Widget, WidgetFormValues>('widgets', repository, { name: '' }, reset)
+    )
+
+    await waitFor(() => expect(result.current.items).toHaveLength(1))
+
+    act(() => {
+      result.current.startEdit(result.current.items[0])
+    })
+    expect(reset).toHaveBeenCalledWith({ id: '1', name: 'First' })
+    expect(result.current.editingId).toBe('1')
+
+    await act(async () => {
+      await result.current.submit({ name: 'First updated' })
+    })
+
+    await waitFor(() =>
+      expect(result.current.items).toEqual([{ id: '1', name: 'First updated' }])
+    )
+    expect(result.current.editingId).toBeNull()
+  })
+
+  it('removes an item', async () => {
+    const repository = createListRepository<Widget>('widgets')
+    await repository.add({ id: '1', name: 'First' })
+    const reset = vi.fn()
+    const { result } = renderHook(() =>
+      useEntityCrudForm<Widget, WidgetFormValues>('widgets', repository, { name: '' }, reset)
+    )
+
+    await waitFor(() => expect(result.current.items).toHaveLength(1))
+
+    await act(async () => {
+      await result.current.remove('1')
+    })
+
+    await waitFor(() => expect(result.current.items).toEqual([]))
+  })
+})
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `npx vitest run src/shared/storage/use-entity-crud-form.test.tsx`
+Expected: FAIL — `Cannot find module './use-entity-crud-form'`.
+
+- [ ] **Step 3: Write minimal implementation**
+
+`src/shared/storage/use-entity-crud-form.ts`:
+```ts
+import { useState } from 'react'
+import { useStorageList } from './use-storage-list'
+
+interface CrudRepository<T> {
+  list: () => Promise<T[]>
+  add: (item: T) => Promise<void>
+  update: (id: string, patch: Partial<T>) => Promise<void>
+  remove: (id: string) => Promise<void>
+}
+
+export function useEntityCrudForm<T extends { id: string }, TFormValues>(
+  storageKey: string,
+  repository: CrudRepository<T>,
+  emptyValues: TFormValues,
+  reset: (values: TFormValues) => void
+) {
+  const { items, reload } = useStorageList<T>(storageKey, repository)
+  const [editingId, setEditingId] = useState<string | null>(null)
+
+  async function submit(values: TFormValues) {
+    if (editingId) {
+      await repository.update(editingId, values as Partial<T>)
+    } else {
+      await repository.add({ id: crypto.randomUUID(), ...values } as T)
+    }
+    setEditingId(null)
+    reset(emptyValues)
+    await reload()
+  }
+
+  function startEdit(item: T) {
+    setEditingId(item.id)
+    reset(item as unknown as TFormValues)
+  }
+
+  async function remove(id: string) {
+    await repository.remove(id)
+    await reload()
+  }
+
+  return { items, editingId, submit, startEdit, remove }
+}
+```
+
+- [ ] **Step 4: Run test to verify it passes**
+
+Run: `npx vitest run src/shared/storage/use-entity-crud-form.test.tsx`
+Expected: PASS — 3 tests passed.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add src/shared/storage/use-entity-crud-form.ts src/shared/storage/use-entity-crud-form.test.tsx
+git commit -m "feat: add useEntityCrudForm hook to centralize list-entity add/edit/delete flow"
+```
+
+---
+
+### Task 13: `PersonalInfoPage`
 
 **Files:**
 - Create: `src/options/personal-info/profile-schema.ts`
@@ -1154,7 +1318,7 @@ git commit -m "feat: add useStorageList hook reactive to chrome.storage changes"
 
 **Interfaces:**
 - Consumes: `useProfile` (Task 10), `saveProfile` (Task 6).
-- Produces: `<PersonalInfoPage />`, a form with `aria-label="Personal info form"`. Consumed by Task 16 (`App`).
+- Produces: `<PersonalInfoPage />`, a form with `aria-label="Personal info form"`. Consumed by Task 17 (`App`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1395,7 +1559,7 @@ git commit -m "feat: add PersonalInfoPage with validated profile form"
 
 ---
 
-### Task 13: `WorkExperiencePage`
+### Task 14: `WorkExperiencePage`
 
 **Files:**
 - Create: `src/options/work-experience/work-experience-schema.ts`
@@ -1403,8 +1567,8 @@ git commit -m "feat: add PersonalInfoPage with validated profile form"
 - Test: `src/options/work-experience/WorkExperiencePage.test.tsx`
 
 **Interfaces:**
-- Consumes: `useStorageList` (Task 11), `workExperienceRepository` (Task 7).
-- Produces: `<WorkExperiencePage />` with a list `aria-label="Work experience list"` and a form `aria-label="Work experience form"`. Consumed by Task 16 (`App`).
+- Consumes: `useEntityCrudForm` (Task 12), `workExperienceRepository` (Task 7).
+- Produces: `<WorkExperiencePage />` with a list `aria-label="Work experience list"` and a form `aria-label="Work experience form"`. Consumed by Task 17 (`App`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1484,10 +1648,9 @@ Expected: FAIL — `Cannot find module './WorkExperiencePage'`.
 `src/options/work-experience/WorkExperiencePage.tsx`:
 ```tsx
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { workExperienceRepository } from '../../shared/storage/work-experience-repository'
-import { useStorageList } from '../../shared/storage/use-storage-list'
+import { useEntityCrudForm } from '../../shared/storage/use-entity-crud-form'
 import type { WorkExperience } from '../../shared/types/work-experience'
 import {
   workExperienceFormSchema,
@@ -1507,11 +1670,6 @@ const emptyValues: WorkExperienceFormValues = {
 }
 
 export function WorkExperiencePage() {
-  const { items, reload } = useStorageList<WorkExperience>(
-    'workExperiences',
-    workExperienceRepository
-  )
-  const [editingId, setEditingId] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -1521,27 +1679,12 @@ export function WorkExperiencePage() {
     resolver: zodResolver(workExperienceFormSchema),
     defaultValues: emptyValues,
   })
+  const { items, editingId, submit, startEdit, remove } = useEntityCrudForm<
+    WorkExperience,
+    WorkExperienceFormValues
+  >('workExperiences', workExperienceRepository, emptyValues, reset)
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (editingId) {
-      await workExperienceRepository.update(editingId, values)
-    } else {
-      await workExperienceRepository.add({ id: crypto.randomUUID(), ...values })
-    }
-    setEditingId(null)
-    reset(emptyValues)
-    await reload()
-  })
-
-  function startEdit(item: WorkExperience) {
-    setEditingId(item.id)
-    reset(item)
-  }
-
-  async function remove(id: string) {
-    await workExperienceRepository.remove(id)
-    await reload()
-  }
+  const onSubmit = handleSubmit(submit)
 
   return (
     <section>
@@ -1625,7 +1768,7 @@ git commit -m "feat: add WorkExperiencePage with add/edit/delete flow"
 
 ---
 
-### Task 14: `EducationPage`
+### Task 15: `EducationPage`
 
 **Files:**
 - Create: `src/options/education/education-schema.ts`
@@ -1633,8 +1776,8 @@ git commit -m "feat: add WorkExperiencePage with add/edit/delete flow"
 - Test: `src/options/education/EducationPage.test.tsx`
 
 **Interfaces:**
-- Consumes: `useStorageList` (Task 11), `educationRepository` (Task 8).
-- Produces: `<EducationPage />` with a list `aria-label="Education list"` and a form `aria-label="Education form"`. Consumed by Task 16 (`App`).
+- Consumes: `useEntityCrudForm` (Task 12), `educationRepository` (Task 8).
+- Produces: `<EducationPage />` with a list `aria-label="Education list"` and a form `aria-label="Education form"`. Consumed by Task 17 (`App`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1696,10 +1839,9 @@ Expected: FAIL — `Cannot find module './EducationPage'`.
 `src/options/education/EducationPage.tsx`:
 ```tsx
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { educationRepository } from '../../shared/storage/education-repository'
-import { useStorageList } from '../../shared/storage/use-storage-list'
+import { useEntityCrudForm } from '../../shared/storage/use-entity-crud-form'
 import type { Education } from '../../shared/types/education'
 import { educationFormSchema, type EducationFormValues } from './education-schema'
 
@@ -1715,8 +1857,6 @@ const emptyValues: EducationFormValues = {
 }
 
 export function EducationPage() {
-  const { items, reload } = useStorageList<Education>('educations', educationRepository)
-  const [editingId, setEditingId] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -1726,27 +1866,12 @@ export function EducationPage() {
     resolver: zodResolver(educationFormSchema),
     defaultValues: emptyValues,
   })
+  const { items, editingId, submit, startEdit, remove } = useEntityCrudForm<
+    Education,
+    EducationFormValues
+  >('educations', educationRepository, emptyValues, reset)
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (editingId) {
-      await educationRepository.update(editingId, values)
-    } else {
-      await educationRepository.add({ id: crypto.randomUUID(), ...values })
-    }
-    setEditingId(null)
-    reset(emptyValues)
-    await reload()
-  })
-
-  function startEdit(item: Education) {
-    setEditingId(item.id)
-    reset(item)
-  }
-
-  async function remove(id: string) {
-    await educationRepository.remove(id)
-    await reload()
-  }
+  const onSubmit = handleSubmit(submit)
 
   return (
     <section>
@@ -1824,7 +1949,7 @@ git commit -m "feat: add EducationPage with add/edit/delete flow"
 
 ---
 
-### Task 15: `AnswerBankPage`
+### Task 16: `AnswerBankPage`
 
 **Files:**
 - Create: `src/options/answer-bank/answer-bank-schema.ts`
@@ -1832,8 +1957,8 @@ git commit -m "feat: add EducationPage with add/edit/delete flow"
 - Test: `src/options/answer-bank/AnswerBankPage.test.tsx`
 
 **Interfaces:**
-- Consumes: `useStorageList` (Task 11), `answerBankRepository` (Task 9).
-- Produces: `<AnswerBankPage />` with a list `aria-label="Answer bank list"` and a form `aria-label="Answer bank form"`. Consumed by Task 16 (`App`).
+- Consumes: `useEntityCrudForm` (Task 12), `answerBankRepository` (Task 9).
+- Produces: `<AnswerBankPage />` with a list `aria-label="Answer bank list"` and a form `aria-label="Answer bank form"`. Consumed by Task 17 (`App`).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1894,10 +2019,9 @@ Expected: FAIL — `Cannot find module './AnswerBankPage'`.
 `src/options/answer-bank/AnswerBankPage.tsx`:
 ```tsx
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { answerBankRepository } from '../../shared/storage/answer-bank-repository'
-import { useStorageList } from '../../shared/storage/use-storage-list'
+import { useEntityCrudForm } from '../../shared/storage/use-entity-crud-form'
 import type { AnswerBankEntry } from '../../shared/types/answer-bank'
 import { answerBankFormSchema, type AnswerBankFormValues } from './answer-bank-schema'
 
@@ -1911,8 +2035,6 @@ const emptyValues: AnswerBankFormValues = {
 }
 
 export function AnswerBankPage() {
-  const { items, reload } = useStorageList<AnswerBankEntry>('answerBank', answerBankRepository)
-  const [editingId, setEditingId] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -1923,28 +2045,13 @@ export function AnswerBankPage() {
     resolver: zodResolver(answerBankFormSchema),
     defaultValues: emptyValues,
   })
+  const { items, editingId, submit, startEdit, remove } = useEntityCrudForm<
+    AnswerBankEntry,
+    AnswerBankFormValues
+  >('answerBank', answerBankRepository, emptyValues, reset)
   const isSensitiveField = register('isSensitive')
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (editingId) {
-      await answerBankRepository.update(editingId, values)
-    } else {
-      await answerBankRepository.add({ id: crypto.randomUUID(), ...values })
-    }
-    setEditingId(null)
-    reset(emptyValues)
-    await reload()
-  })
-
-  function startEdit(item: AnswerBankEntry) {
-    setEditingId(item.id)
-    reset(item)
-  }
-
-  async function remove(id: string) {
-    await answerBankRepository.remove(id)
-    await reload()
-  }
+  const onSubmit = handleSubmit(submit)
 
   return (
     <section>
@@ -2041,14 +2148,14 @@ git commit -m "feat: add AnswerBankPage with sensitive-question auto-fill guard"
 
 ---
 
-### Task 16: Wire the Options `App` shell (tab navigation) + manual end-to-end verification
+### Task 17: Wire the Options `App` shell (tab navigation) + manual end-to-end verification
 
 **Files:**
 - Modify: `src/options/App.tsx`
 - Test: `src/options/App.test.tsx`
 
 **Interfaces:**
-- Consumes: `PersonalInfoPage` (Task 12), `WorkExperiencePage` (Task 13), `EducationPage` (Task 14), `AnswerBankPage` (Task 15).
+- Consumes: `PersonalInfoPage` (Task 13), `WorkExperiencePage` (Task 14), `EducationPage` (Task 15), `AnswerBankPage` (Task 16).
 - Produces: the assembled Options page. This is the last task in this plan — Application Records, Import/Export, and Privacy Settings tabs are out of scope and belong to a later plan.
 
 - [ ] **Step 1: Write the failing test**
@@ -2143,7 +2250,7 @@ Expected: PASS — 1 test passed.
 - [ ] **Step 5: Run the full test suite**
 
 Run: `npm test`
-Expected: all test files pass (Tasks 3 through 16), 0 failures.
+Expected: all test files pass (Tasks 3 through 17), 0 failures.
 
 - [ ] **Step 6: Build and manually verify in Chrome**
 
