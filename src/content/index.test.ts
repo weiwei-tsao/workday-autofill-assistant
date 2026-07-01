@@ -1,9 +1,27 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { installChromeRuntimeMock } from '../../tests/chrome-runtime-mock'
+import { installChromeStorageMock } from '../../tests/chrome-storage-mock'
+import { saveProfile } from '../shared/storage/profile-repository'
+import type { Profile } from '../shared/types/profile'
+
+const profile: Profile = {
+  firstName: 'Ada',
+  lastName: 'Lovelace',
+  email: 'ada@example.com',
+  phone: '555-0100',
+  country: 'Canada',
+  addressLine1: '123 Main St',
+  city: 'Toronto',
+  province: 'ON',
+  postalCode: 'M5V 2T6',
+  workAuthorizationStatus: 'Citizen',
+  sponsorshipRequired: false,
+}
 
 describe('content script entry', () => {
   beforeEach(() => {
     vi.resetModules()
+    installChromeStorageMock()
     installChromeRuntimeMock()
     document.body.innerHTML = ''
   })
@@ -24,5 +42,33 @@ describe('content script entry', () => {
     const response = await chrome.tabs.sendMessage(1, { type: 'GET_PAGE_STATUS' })
 
     expect(response).toEqual({ type: 'PAGE_STATUS', isWorkdayPage: false })
+  })
+
+  it('responds to AUTOFILL_PAGE by filling matched fields from the saved profile', async () => {
+    await saveProfile(profile)
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 1, needsReview: 0 },
+    })
+    expect((document.getElementById('firstName') as HTMLInputElement).value).toBe('Ada')
+  })
+
+  it('reports zero filled fields when no profile has been saved yet', async () => {
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 0, needsReview: 0 },
+    })
   })
 })
