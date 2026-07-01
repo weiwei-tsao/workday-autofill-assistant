@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { saveProfile } from '../../shared/storage/profile-repository'
 import { useProfile } from '../../shared/storage/use-profile'
@@ -27,35 +27,34 @@ const defaultValues: ProfileFormValues = {
 
 export function PersonalInfoPage() {
   const { profile, reload } = useProfile()
-  const isInitialized = useRef(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  const skipNextResetRef = useRef(false)
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues,
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
   })
 
   useEffect(() => {
-    if (profile && !isInitialized.current) {
-      reset(profile)
-      isInitialized.current = true
+    if (!profile) return
+    if (skipNextResetRef.current) {
+      skipNextResetRef.current = false
+      return
     }
+    reset(profile)
   }, [profile, reset])
 
   const onSubmit = handleSubmit(async (values) => {
+    skipNextResetRef.current = true
     await saveProfile(values)
     await reload()
-    setIsSuccess(true)
   })
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 max-w-xl" aria-label="Personal info form">
+    <form onSubmit={onSubmit} className="space-y-4 max-w-xl" aria-label="Personal info form" noValidate>
       <div>
         <label htmlFor="firstName">First name</label>
         <input id="firstName" {...register('firstName')} />
@@ -72,7 +71,7 @@ export function PersonalInfoPage() {
       </div>
       <div>
         <label htmlFor="email">Email</label>
-        <input id="email" {...register('email')} />
+        <input id="email" type="email" {...register('email')} />
         {errors.email && <p role="alert">{errors.email.message}</p>}
       </div>
       <div>
@@ -139,7 +138,7 @@ export function PersonalInfoPage() {
         <input id="earliestStartDate" type="date" {...register('earliestStartDate')} />
       </div>
       <button type="submit">Save</button>
-      {isSuccess && <p role="status">Profile saved.</p>}
+      {isSubmitSuccessful && <p role="status">Profile saved.</p>}
     </form>
   )
 }
