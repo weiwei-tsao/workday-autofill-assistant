@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { installChromeStorageMock } from '../../../tests/chrome-storage-mock'
+import { answerBankFormSchema } from './answer-bank-schema'
 import { AnswerBankPage } from './AnswerBankPage'
 
 beforeEach(() => {
@@ -23,5 +24,18 @@ describe('AnswerBankPage', () => {
     const list = await screen.findByLabelText('Answer bank list')
     expect(within(list).getByText('Are you a veteran?')).toBeInTheDocument()
     expect(within(list).getByText('Sensitive — auto-fill off')).toBeInTheDocument()
+  })
+
+  it('enforces sensitive-field constraint at schema level even when bypassing checkbox guard', () => {
+    const input = {
+      questionKey: 'testKey',
+      questionLabel: 'Test',
+      type: 'text' as const,
+      value: 'answer',
+      isSensitive: true,
+      autoFillEnabled: true,
+    }
+    const result = answerBankFormSchema.parse(input)
+    expect(result.autoFillEnabled).toBe(false)
   })
 })
