@@ -66,7 +66,7 @@ export const FIELD_DICTIONARY: FieldDictionaryEntry[] = [
     patterns: [/legally\s*authorized/i, /authorized\s*to\s*work/i],
   },
   { canonicalKey: 'sponsorship', patterns: [/sponsorship/i] },
-  { canonicalKey: 'relocate', patterns: [/willing\s*to\s*relocate/i, /relocation/i] },
+  { canonicalKey: 'relocate', patterns: [/relocat/i] },
   {
     canonicalKey: 'workArrangement',
     patterns: [/work\s*arrangement/i, /remote.*hybrid.*onsite/i],

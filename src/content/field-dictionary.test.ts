@@ -62,6 +62,9 @@ describe('FIELD_DICTIONARY', () => {
     expect(byKey('relocate')?.patterns.some((p) => p.test('Are you willing to relocate?'))).toBe(
       true
     )
+    expect(
+      byKey('relocate')?.patterns.some((p) => p.test('Would you consider relocating for this role?'))
+    ).toBe(true)
     expect(byKey('workArrangement')?.patterns.some((p) => p.test('Work arrangement'))).toBe(true)
     expect(byKey('desiredSalary')?.patterns.some((p) => p.test('Desired salary'))).toBe(true)
     expect(byKey('noticePeriod')?.patterns.some((p) => p.test('Notice period'))).toBe(true)
