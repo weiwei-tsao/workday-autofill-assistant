@@ -68,7 +68,7 @@ export function installChromeRuntimeMock() {
   }
 
   // @ts-expect-error partial chrome mock sufficient for these tests
-  globalThis.chrome = { runtime, tabs, sidePanel }
+  globalThis.chrome = { ...(globalThis.chrome ?? {}), runtime, tabs, sidePanel }
 
   return {
     triggerInstalled() {

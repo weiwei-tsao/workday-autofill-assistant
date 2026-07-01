@@ -31,7 +31,7 @@ export function installChromeStorageMock() {
   }
 
   // @ts-expect-error partial chrome mock sufficient for these tests
-  globalThis.chrome = { storage: { local, onChanged } }
+  globalThis.chrome = { ...(globalThis.chrome ?? {}), storage: { local, onChanged } }
 
   return { store }
 }
