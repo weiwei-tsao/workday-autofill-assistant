@@ -1,0 +1,30 @@
+.DS_Store
+
+# dependencies
+node_modules/
+
+# build output
+dist/
+dist-*/
+*.crx
+*.pem
+
+# vite
+.vite/
+
+# env
+.env
+.env.*
+
+# logs
+*.log
+npm-debug.log*
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Claude Code - personal/local-only, not shared with the team
+.claude/settings.local.json
+CLAUDE.local.md
