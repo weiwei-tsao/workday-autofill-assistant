@@ -1,14 +1,28 @@
 import { getProfile } from '../shared/storage/profile-repository'
+import { educationRepository } from '../shared/storage/education-repository'
+import { workExperienceRepository } from '../shared/storage/work-experience-repository'
 import type {
   AutofillResultMessage,
+  AutofillSummary,
   ExtensionMessage,
   PageStatusMessage,
 } from '../shared/messaging/messages'
 import type { Profile } from '../shared/types/profile'
 import { isWorkdayPage } from './detector'
-import { autofillFields } from './executor'
+import { autofillFields, autofillSectionFields } from './executor'
 import { matchFields } from './matcher'
 import { scanFields } from './scanner'
+
+function sumSummaries(summaries: AutofillSummary[]): AutofillSummary {
+  return summaries.reduce(
+    (total, summary) => ({
+      detected: total.detected + summary.detected,
+      filled: total.filled + summary.filled,
+      needsReview: total.needsReview + summary.needsReview,
+    }),
+    { detected: 0, filled: 0, needsReview: 0 }
+  )
+}
 
 chrome.runtime.onMessage.addListener(
   (
@@ -25,13 +39,24 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'AUTOFILL_PAGE') {
-      getProfile().then((profile) => {
+      Promise.all([
+        getProfile(),
+        workExperienceRepository.list(),
+        educationRepository.list(),
+      ]).then(([profile, workExperiences, educations]) => {
         const matches = matchFields(scanFields(document))
-        // An empty profile has no non-empty string values for any canonical
-        // key, so autofillFields naturally reports filled: 0 while still
-        // computing detected/needsReview through the same single code path
-        // used when a real profile is saved — no divergent counting logic.
-        const summary = autofillFields(matches, profile ?? ({} as Profile))
+        const personalInfoMatches = matches.filter((match) => match.section === null)
+        const workExperienceMatches = matches.filter(
+          (match) => match.section === 'workExperience'
+        )
+        const educationMatches = matches.filter((match) => match.section === 'education')
+
+        const summary = sumSummaries([
+          autofillFields(personalInfoMatches, profile ?? ({} as Profile)),
+          autofillSectionFields(workExperienceMatches, 'workExperience', workExperiences[0]),
+          autofillSectionFields(educationMatches, 'education', educations[0]),
+        ])
+
         sendResponse({ type: 'AUTOFILL_RESULT', summary })
       })
       return true
