@@ -26,7 +26,7 @@ const defaultValues: ProfileFormValues = {
 }
 
 export function PersonalInfoPage() {
-  const { profile, reload } = useProfile()
+  const { profile } = useProfile()
   const skipNextResetRef = useRef(false)
   const {
     register,
@@ -50,7 +50,6 @@ export function PersonalInfoPage() {
   const onSubmit = handleSubmit(async (values) => {
     skipNextResetRef.current = true
     await saveProfile(values)
-    await reload()
   })
 
   return (
