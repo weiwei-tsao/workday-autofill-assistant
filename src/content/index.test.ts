@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { installChromeRuntimeMock } from '../../tests/chrome-runtime-mock'
 import { installChromeStorageMock } from '../../tests/chrome-storage-mock'
+import { answerBankRepository } from '../shared/storage/answer-bank-repository'
 import { educationRepository } from '../shared/storage/education-repository'
 import { saveProfile } from '../shared/storage/profile-repository'
 import { workExperienceRepository } from '../shared/storage/work-experience-repository'
@@ -167,6 +168,66 @@ describe('content script entry', () => {
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
       summary: { detected: 2, filled: 2, needsReview: 0 },
+    })
+  })
+
+  it('fills a common question field from a matching answer bank entry', async () => {
+    await answerBankRepository.add({
+      id: '1',
+      questionKey: 'desiredSalary',
+      questionLabel: 'Desired salary',
+      type: 'text',
+      value: '$120,000',
+      isSensitive: false,
+      autoFillEnabled: true,
+    })
+    document.body.innerHTML =
+      '<label for="salary">Desired salary</label><input id="salary" name="desiredSalary" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 1, needsReview: 0 },
+    })
+    expect((document.getElementById('salary') as HTMLInputElement).value).toBe('$120,000')
+  })
+
+  it('never fills a sensitive answer bank entry even when matched', async () => {
+    await answerBankRepository.add({
+      id: '1',
+      questionKey: 'sponsorship',
+      questionLabel: 'Sponsorship',
+      type: 'yesNo',
+      value: 'No',
+      isSensitive: true,
+      autoFillEnabled: false,
+    })
+    document.body.innerHTML =
+      '<label for="sponsorship">Sponsorship</label><input id="sponsorship" name="sponsorship" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 0, needsReview: 0 },
+    })
+  })
+
+  it('does not double-count a common question field in both personal info and answer bank passes', async () => {
+    await saveProfile(profile)
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />' +
+      '<label for="salary">Desired salary</label><input id="salary" name="desiredSalary" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 2, filled: 1, needsReview: 0 },
     })
   })
 })

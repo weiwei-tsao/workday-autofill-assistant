@@ -1,4 +1,5 @@
 import { getProfile } from '../shared/storage/profile-repository'
+import { answerBankRepository } from '../shared/storage/answer-bank-repository'
 import { educationRepository } from '../shared/storage/education-repository'
 import { workExperienceRepository } from '../shared/storage/work-experience-repository'
 import type {
@@ -8,8 +9,9 @@ import type {
   PageStatusMessage,
 } from '../shared/messaging/messages'
 import type { Profile } from '../shared/types/profile'
+import { COMMON_QUESTION_KEYS } from './field-dictionary'
 import { isWorkdayPage } from './detector'
-import { autofillFields, autofillSectionFields } from './executor'
+import { autofillAnswerBankFields, autofillFields, autofillSectionFields } from './executor'
 import { matchFields } from './matcher'
 import { scanFields } from './scanner'
 
@@ -43,9 +45,16 @@ chrome.runtime.onMessage.addListener(
         getProfile(),
         workExperienceRepository.list(),
         educationRepository.list(),
-      ]).then(([profile, workExperiences, educations]) => {
+        answerBankRepository.list(),
+      ]).then(([profile, workExperiences, educations, answerBank]) => {
         const matches = matchFields(scanFields(document))
-        const personalInfoMatches = matches.filter((match) => match.section === null)
+        const sectionAgnosticMatches = matches.filter((match) => match.section === null)
+        const commonQuestionMatches = sectionAgnosticMatches.filter(
+          (match) => match.canonicalKey !== null && COMMON_QUESTION_KEYS.has(match.canonicalKey)
+        )
+        const personalInfoMatches = sectionAgnosticMatches.filter(
+          (match) => match.canonicalKey === null || !COMMON_QUESTION_KEYS.has(match.canonicalKey)
+        )
         const workExperienceMatches = matches.filter(
           (match) => match.section === 'workExperience'
         )
@@ -55,6 +64,7 @@ chrome.runtime.onMessage.addListener(
           autofillFields(personalInfoMatches, profile ?? ({} as Profile)),
           autofillSectionFields(workExperienceMatches, 'workExperience', workExperiences[0]),
           autofillSectionFields(educationMatches, 'education', educations[0]),
+          autofillAnswerBankFields(commonQuestionMatches, answerBank),
         ])
 
         sendResponse({ type: 'AUTOFILL_RESULT', summary })
