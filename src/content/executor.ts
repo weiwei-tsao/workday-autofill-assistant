@@ -2,6 +2,7 @@ import type { AutofillSummary } from '../shared/messaging/messages'
 import type { Profile } from '../shared/types/profile'
 import type { FieldSection } from './field-dictionary'
 import type { FieldMatch } from './matcher'
+import type { AnswerBankEntry } from '../shared/types/answer-bank'
 
 type FillableValue = string | number | boolean
 
@@ -68,6 +69,32 @@ export function autofillSectionFields<T extends object>(
         : undefined
       if (hasFillableValue(value)) {
         setFieldValue(match.field.element, value)
+        filled++
+      }
+    } else if (match.confidence === 'medium') {
+      needsReview++
+    }
+  }
+
+  return { detected, filled, needsReview }
+}
+
+export function autofillAnswerBankFields(
+  matches: FieldMatch[],
+  answerBank: AnswerBankEntry[]
+): AutofillSummary {
+  let detected = 0
+  let filled = 0
+  let needsReview = 0
+
+  for (const match of matches) {
+    if (match.canonicalKey === null || match.confidence === 'low') continue
+    detected++
+
+    if (match.confidence === 'high') {
+      const entry = answerBank.find((candidate) => candidate.questionKey === match.canonicalKey)
+      if (entry && !entry.isSensitive && entry.autoFillEnabled && hasFillableValue(entry.value)) {
+        setFieldValue(match.field.element, entry.value)
         filled++
       }
     } else if (match.confidence === 'medium') {

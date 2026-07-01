@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { Profile } from '../shared/types/profile'
 import type { WorkExperience } from '../shared/types/work-experience'
-import { autofillFields, autofillSectionFields } from './executor'
+import type { AnswerBankEntry } from '../shared/types/answer-bank'
+import { autofillFields, autofillSectionFields, autofillAnswerBankFields } from './executor'
 import { matchFields } from './matcher'
 import { scanFields } from './scanner'
 
@@ -147,6 +148,85 @@ describe('autofillSectionFields', () => {
     const summary = autofillSectionFields(matches, 'workExperience', undefined)
 
     expect((document.getElementById('companyName') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+})
+
+describe('autofillAnswerBankFields', () => {
+  it('fills a high-confidence match with a non-sensitive, auto-fill-enabled answer', () => {
+    document.body.innerHTML =
+      '<label for="salary">Desired salary</label><input id="salary" name="desiredSalary" />'
+    const matches = matchFields(scanFields(document))
+    const answerBank: AnswerBankEntry[] = [
+      {
+        id: '1',
+        questionKey: 'desiredSalary',
+        questionLabel: 'Desired salary',
+        type: 'text',
+        value: '$120,000',
+        isSensitive: false,
+        autoFillEnabled: true,
+      },
+    ]
+
+    const summary = autofillAnswerBankFields(matches, answerBank)
+
+    expect((document.getElementById('salary') as HTMLInputElement).value).toBe('$120,000')
+    expect(summary).toEqual({ detected: 1, filled: 1, needsReview: 0 })
+  })
+
+  it('never fills a sensitive answer bank entry, even if matched at high confidence', () => {
+    document.body.innerHTML =
+      '<label for="sponsorship">Sponsorship</label><input id="sponsorship" name="sponsorship" />'
+    const matches = matchFields(scanFields(document))
+    const answerBank: AnswerBankEntry[] = [
+      {
+        id: '1',
+        questionKey: 'sponsorship',
+        questionLabel: 'Sponsorship',
+        type: 'yesNo',
+        value: 'No',
+        isSensitive: true,
+        autoFillEnabled: false,
+      },
+    ]
+
+    const summary = autofillAnswerBankFields(matches, answerBank)
+
+    expect((document.getElementById('sponsorship') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+
+  it('does not fill a non-sensitive entry with autoFillEnabled set to false', () => {
+    document.body.innerHTML =
+      '<label for="notice">Notice period</label><input id="notice" name="noticePeriod" />'
+    const matches = matchFields(scanFields(document))
+    const answerBank: AnswerBankEntry[] = [
+      {
+        id: '1',
+        questionKey: 'noticePeriod',
+        questionLabel: 'Notice period',
+        type: 'text',
+        value: '2 weeks',
+        isSensitive: false,
+        autoFillEnabled: false,
+      },
+    ]
+
+    const summary = autofillAnswerBankFields(matches, answerBank)
+
+    expect((document.getElementById('notice') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+
+  it('reports zero filled fields when no matching answer bank entry exists', () => {
+    document.body.innerHTML =
+      '<label for="salary">Desired salary</label><input id="salary" name="desiredSalary" />'
+    const matches = matchFields(scanFields(document))
+
+    const summary = autofillAnswerBankFields(matches, [])
+
+    expect((document.getElementById('salary') as HTMLInputElement).value).toBe('')
     expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
   })
 })
