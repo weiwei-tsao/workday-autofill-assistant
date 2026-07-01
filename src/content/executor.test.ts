@@ -59,4 +59,17 @@ describe('autofillFields', () => {
 
     expect(summary).toEqual({ detected: 0, filled: 0, needsReview: 0 })
   })
+
+  it('ignores low-confidence matches entirely, even when they have a canonical key', () => {
+    document.body.innerHTML = '<input placeholder="linkedin profile" />'
+    const matches = matchFields(scanFields(document))
+
+    // Sanity-check this test actually exercises the low-confidence, non-null-key path
+    expect(matches[0].canonicalKey).toBe('linkedinUrl')
+    expect(matches[0].confidence).toBe('low')
+
+    const summary = autofillFields(matches, profile)
+
+    expect(summary).toEqual({ detected: 0, filled: 0, needsReview: 0 })
+  })
 })
