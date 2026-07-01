@@ -1,4 +1,4 @@
-export interface WorkExperience extends Record<string, unknown> {
+export interface WorkExperience {
   id: string
   companyName: string
   jobTitle: string

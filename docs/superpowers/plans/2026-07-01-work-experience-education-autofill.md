@@ -484,10 +484,11 @@ git commit -m "feat(content): detect field section and filter dictionary matches
 **Files:**
 - Modify: `src/content/executor.ts`
 - Modify: `src/content/executor.test.ts` (add a new `describe` block only — do not change the existing tests)
+- Modify: `src/content/scanner.ts` — add `input[type="number"]` to `FIELD_SELECTOR` (a one-line, additive change; without it, the `startYear` number input in this task's own test would never be scanned at all, since Task 1 didn't need number inputs). Do not touch anything else in this file.
 
 **Interfaces:**
-- Consumes: `FieldSection` (Task 2), `FieldMatch.section` (Task 3), `WorkExperience`/`Education` (existing, `src/shared/types/`).
-- Produces: `autofillFields` (existing signature, unchanged, but its value-write path now also handles numbers/booleans — the four existing Profile-based tests are unaffected since every `Profile` field `autofillFields` reads is a string). New: `autofillSectionFields(matches: FieldMatch[], section: FieldSection, entry: Record<string, unknown> | undefined): AutofillSummary`. Consumed by Task 5 (content script wiring).
+- Consumes: `FieldSection` (Task 2), `FieldMatch.section` (Task 3), `WorkExperience`/`Education` (existing, `src/shared/types/`, untouched by this task — see the generic signature below).
+- Produces: `autofillFields` (existing signature, unchanged, but its value-write path now also handles numbers/booleans — the five existing Profile-based tests are unaffected since every `Profile` field `autofillFields` reads is a string). New: `autofillSectionFields<T extends object>(matches: FieldMatch[], section: FieldSection, entry: T | undefined): AutofillSummary` — generic so callers can pass a `WorkExperience` or `Education` object directly with no cast at the call site, and no change to either domain type; the one cast needed to index by a dynamic canonical key stays fully contained inside this function. Consumed by Task 5 (content script wiring).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -623,10 +624,10 @@ export function autofillFields(matches: FieldMatch[], profile: Profile): Autofil
   return { detected, filled, needsReview }
 }
 
-export function autofillSectionFields(
+export function autofillSectionFields<T extends object>(
   matches: FieldMatch[],
   section: FieldSection,
-  entry: Record<string, unknown> | undefined
+  entry: T | undefined
 ): AutofillSummary {
   let detected = 0
   let filled = 0
@@ -638,7 +639,9 @@ export function autofillSectionFields(
     detected++
 
     if (match.confidence === 'high') {
-      const value = entry?.[match.canonicalKey]
+      const value = entry
+        ? (entry as Record<string, unknown>)[match.canonicalKey]
+        : undefined
       if (hasFillableValue(value)) {
         setFieldValue(match.field.element, value)
         filled++
@@ -655,7 +658,7 @@ export function autofillSectionFields(
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/content/executor.test.ts`
-Expected: PASS — 7 tests passed (4 existing + 3 new).
+Expected: PASS — 8 tests passed (5 existing + 3 new — the existing `describe('autofillFields', ...)` block has 5 tests, not 4; double-check the actual count in the file rather than assuming).
 
 - [ ] **Step 5: Type-check and run the full suite**
 
@@ -663,7 +666,7 @@ Run: `npx tsc --noEmit`
 Expected: no errors.
 
 Run: `npm test`
-Expected: all test files pass — confirm in particular that all 4 pre-existing `autofillFields` tests (Profile-based) still pass unchanged, proving the generalized `hasFillableValue`/`setFieldValue` didn't regress Phase 4 behavior.
+Expected: all test files pass — confirm in particular that all 5 pre-existing `autofillFields` tests (Profile-based) still pass unchanged, proving the generalized `hasFillableValue`/`setFieldValue` didn't regress Phase 4 behavior.
 
 - [ ] **Step 6: Commit**
 

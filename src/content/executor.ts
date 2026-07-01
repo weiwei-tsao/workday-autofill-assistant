@@ -48,10 +48,10 @@ export function autofillFields(matches: FieldMatch[], profile: Profile): Autofil
   return { detected, filled, needsReview }
 }
 
-export function autofillSectionFields(
+export function autofillSectionFields<T extends object>(
   matches: FieldMatch[],
   section: FieldSection,
-  entry: Record<string, unknown> | undefined
+  entry: T | undefined
 ): AutofillSummary {
   let detected = 0
   let filled = 0
@@ -63,7 +63,9 @@ export function autofillSectionFields(
     detected++
 
     if (match.confidence === 'high') {
-      const value = entry?.[match.canonicalKey]
+      const value = entry
+        ? (entry as Record<string, unknown>)[match.canonicalKey]
+        : undefined
       if (hasFillableValue(value)) {
         setFieldValue(match.field.element, value)
         filled++
