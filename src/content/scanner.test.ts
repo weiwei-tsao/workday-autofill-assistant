@@ -59,4 +59,46 @@ describe('scanFields', () => {
       'Remote',
     ])
   })
+
+  it('captures the nearest preceding section heading for a field', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Work Experience</h2>
+        <div class="entry">
+          <label for="companyName">Company Name</label>
+          <input id="companyName" name="companyName" />
+        </div>
+      </section>
+    `
+
+    const fields = scanFields(document)
+
+    expect(fields[0].sectionHeadingText).toBe('Work Experience')
+  })
+
+  it('returns an empty string when there is no preceding heading', () => {
+    document.body.innerHTML = '<label for="firstName">First Name</label><input id="firstName" />'
+
+    const fields = scanFields(document)
+
+    expect(fields[0].sectionHeadingText).toBe('')
+  })
+
+  it('finds the correct heading when multiple sections precede the field', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Personal Information</h2>
+        <input id="firstName" aria-label="First Name" />
+      </section>
+      <section>
+        <h2>Education</h2>
+        <input id="schoolName" aria-label="School Name" />
+      </section>
+    `
+
+    const fields = scanFields(document)
+
+    expect(fields[0].sectionHeadingText).toBe('Personal Information')
+    expect(fields[1].sectionHeadingText).toBe('Education')
+  })
 })

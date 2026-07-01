@@ -5,11 +5,14 @@ export interface ScannedField {
   placeholder: string
   name: string
   id: string
+  sectionHeadingText: string
 }
 
 const FIELD_SELECTOR =
   'input[type="text"], input[type="email"], input[type="tel"], input:not([type]), ' +
   'textarea, select, input[type="checkbox"], input[type="radio"]'
+
+const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6, [role="heading"]'
 
 function findLabelText(element: Element, doc: Document): string {
   const id = element.getAttribute('id')
@@ -19,6 +22,27 @@ function findLabelText(element: Element, doc: Document): string {
   }
   const parentLabel = element.closest('label')
   if (parentLabel?.textContent) return parentLabel.textContent.trim()
+  return ''
+}
+
+function findSectionHeadingText(element: Element): string {
+  let current: Element | null = element
+
+  while (current) {
+    let sibling: Element | null = current.previousElementSibling
+    while (sibling) {
+      if (sibling.matches(HEADING_SELECTOR)) {
+        return sibling.textContent?.trim() ?? ''
+      }
+      const nestedHeading = sibling.querySelector(HEADING_SELECTOR)
+      if (nestedHeading?.textContent) {
+        return nestedHeading.textContent.trim()
+      }
+      sibling = sibling.previousElementSibling
+    }
+    current = current.parentElement
+  }
+
   return ''
 }
 
@@ -36,5 +60,6 @@ export function scanFields(doc: Document = document): ScannedField[] {
     placeholder: element.getAttribute('placeholder') ?? '',
     name: element.getAttribute('name') ?? '',
     id: element.getAttribute('id') ?? '',
+    sectionHeadingText: findSectionHeadingText(element),
   }))
 }
