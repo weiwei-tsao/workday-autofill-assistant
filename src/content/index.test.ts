@@ -71,4 +71,19 @@ describe('content script entry', () => {
       summary: { detected: 1, filled: 0, needsReview: 0 },
     })
   })
+
+  it('still counts medium-confidence matches as needing review when no profile has been saved', async () => {
+    // "Given Name" alone (no matching id/name) scores 40 from the label
+    // match only — medium confidence, per the same scoring matchFields
+    // uses when a profile is saved.
+    document.body.innerHTML = '<label for="fn">Given Name</label><input id="fn" name="fn" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 0, needsReview: 1 },
+    })
+  })
 })

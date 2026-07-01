@@ -378,6 +378,21 @@ describe('content script entry', () => {
       summary: { detected: 1, filled: 0, needsReview: 0 },
     })
   })
+
+  it('still counts medium-confidence matches as needing review when no profile has been saved', async () => {
+    // "Given Name" alone (no matching id/name) scores 40 from the label
+    // match only — medium confidence, per the same scoring matchFields
+    // uses when a profile is saved.
+    document.body.innerHTML = '<label for="fn">Given Name</label><input id="fn" name="fn" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 0, needsReview: 1 },
+    })
+  })
 })
 ```
 
@@ -396,6 +411,7 @@ import type {
   ExtensionMessage,
   PageStatusMessage,
 } from '../shared/messaging/messages'
+import type { Profile } from '../shared/types/profile'
 import { isWorkdayPage } from './detector'
 import { autofillFields } from './executor'
 import { matchFields } from './matcher'
@@ -418,13 +434,11 @@ chrome.runtime.onMessage.addListener(
     if (message.type === 'AUTOFILL_PAGE') {
       getProfile().then((profile) => {
         const matches = matchFields(scanFields(document))
-        const summary = profile
-          ? autofillFields(matches, profile)
-          : {
-              detected: matches.filter((match) => match.canonicalKey !== null).length,
-              filled: 0,
-              needsReview: 0,
-            }
+        // An empty profile has no non-empty string values for any canonical
+        // key, so autofillFields naturally reports filled: 0 while still
+        // computing detected/needsReview through the same single code path
+        // used when a real profile is saved — no divergent counting logic.
+        const summary = autofillFields(matches, profile ?? ({} as Profile))
         sendResponse({ type: 'AUTOFILL_RESULT', summary })
       })
       return true
@@ -438,7 +452,7 @@ chrome.runtime.onMessage.addListener(
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/content/index.test.ts`
-Expected: PASS — 4 tests passed.
+Expected: PASS — 5 tests passed.
 
 - [ ] **Step 5: Type-check and run the full suite**
 

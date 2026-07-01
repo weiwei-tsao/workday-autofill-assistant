@@ -4,6 +4,7 @@ import type {
   ExtensionMessage,
   PageStatusMessage,
 } from '../shared/messaging/messages'
+import type { Profile } from '../shared/types/profile'
 import { isWorkdayPage } from './detector'
 import { autofillFields } from './executor'
 import { matchFields } from './matcher'
@@ -26,13 +27,11 @@ chrome.runtime.onMessage.addListener(
     if (message.type === 'AUTOFILL_PAGE') {
       getProfile().then((profile) => {
         const matches = matchFields(scanFields(document))
-        const summary = profile
-          ? autofillFields(matches, profile)
-          : {
-              detected: matches.filter((match) => match.canonicalKey !== null).length,
-              filled: 0,
-              needsReview: 0,
-            }
+        // An empty profile has no non-empty string values for any canonical
+        // key, so autofillFields naturally reports filled: 0 while still
+        // computing detected/needsReview through the same single code path
+        // used when a real profile is saved — no divergent counting logic.
+        const summary = autofillFields(matches, profile ?? ({} as Profile))
         sendResponse({ type: 'AUTOFILL_RESULT', summary })
       })
       return true
