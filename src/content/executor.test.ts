@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Profile } from '../shared/types/profile'
-import { autofillFields } from './executor'
+import type { WorkExperience } from '../shared/types/work-experience'
+import { autofillFields, autofillSectionFields } from './executor'
 import { matchFields } from './matcher'
 import { scanFields } from './scanner'
 
@@ -81,6 +82,71 @@ describe('autofillFields', () => {
     const summary = autofillFields(matches, { ...profile, firstName: '' })
 
     expect((document.getElementById('firstName') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+})
+
+describe('autofillSectionFields', () => {
+  const workExperience: WorkExperience = {
+    id: '1',
+    companyName: 'Acme',
+    jobTitle: 'Engineer',
+    startMonth: 3,
+    startYear: 2020,
+    currentlyWorking: true,
+  }
+
+  it('fills high-confidence work experience fields, including numbers and checkboxes', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Work Experience</h2>
+        <label for="companyName">Company Name</label>
+        <input id="companyName" name="companyName" />
+        <label for="startYear">Start Year</label>
+        <input id="startYear" name="startYear" type="number" />
+        <label for="currentlyWorking">Currently Working</label>
+        <input id="currentlyWorking" name="currentlyWorking" type="checkbox" />
+      </section>
+    `
+    const matches = matchFields(scanFields(document))
+
+    const summary = autofillSectionFields(matches, 'workExperience', workExperience)
+
+    expect((document.getElementById('companyName') as HTMLInputElement).value).toBe('Acme')
+    expect((document.getElementById('startYear') as HTMLInputElement).value).toBe('2020')
+    expect((document.getElementById('currentlyWorking') as HTMLInputElement).checked).toBe(true)
+    expect(summary).toEqual({ detected: 3, filled: 3, needsReview: 0 })
+  })
+
+  it('ignores matches from a different section', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Education</h2>
+        <label for="schoolName">School Name</label>
+        <input id="schoolName" name="schoolName" />
+      </section>
+    `
+    const matches = matchFields(scanFields(document))
+
+    const summary = autofillSectionFields(matches, 'workExperience', workExperience)
+
+    expect((document.getElementById('schoolName') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 0, filled: 0, needsReview: 0 })
+  })
+
+  it('reports zero filled fields when no entry is provided', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Work Experience</h2>
+        <label for="companyName">Company Name</label>
+        <input id="companyName" name="companyName" />
+      </section>
+    `
+    const matches = matchFields(scanFields(document))
+
+    const summary = autofillSectionFields(matches, 'workExperience', undefined)
+
+    expect((document.getElementById('companyName') as HTMLInputElement).value).toBe('')
     expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
   })
 })

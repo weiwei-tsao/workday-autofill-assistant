@@ -9,7 +9,7 @@ export interface ScannedField {
 }
 
 const FIELD_SELECTOR =
-  'input[type="text"], input[type="email"], input[type="tel"], input:not([type]), ' +
+  'input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input:not([type]), ' +
   'textarea, select, input[type="checkbox"], input[type="radio"]'
 
 const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6, [role="heading"]'

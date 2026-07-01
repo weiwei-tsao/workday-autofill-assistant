@@ -1,12 +1,25 @@
 import type { AutofillSummary } from '../shared/messaging/messages'
 import type { Profile } from '../shared/types/profile'
+import type { FieldSection } from './field-dictionary'
 import type { FieldMatch } from './matcher'
+
+type FillableValue = string | number | boolean
+
+function hasFillableValue(value: unknown): value is FillableValue {
+  if (value === undefined || value === null) return false
+  if (typeof value === 'string') return value.length > 0
+  return typeof value === 'number' || typeof value === 'boolean'
+}
 
 function setFieldValue(
   element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
-  value: string
+  value: FillableValue
 ): void {
-  element.value = value
+  if (element instanceof HTMLInputElement && element.type === 'checkbox') {
+    element.checked = Boolean(value)
+  } else {
+    element.value = String(value)
+  }
   element.dispatchEvent(new Event('input', { bubbles: true }))
   element.dispatchEvent(new Event('change', { bubbles: true }))
   element.dispatchEvent(new Event('blur', { bubbles: true }))
@@ -23,7 +36,35 @@ export function autofillFields(matches: FieldMatch[], profile: Profile): Autofil
 
     if (match.confidence === 'high') {
       const value = profile[match.canonicalKey as keyof Profile]
-      if (typeof value === 'string' && value.length > 0) {
+      if (hasFillableValue(value)) {
+        setFieldValue(match.field.element, value)
+        filled++
+      }
+    } else if (match.confidence === 'medium') {
+      needsReview++
+    }
+  }
+
+  return { detected, filled, needsReview }
+}
+
+export function autofillSectionFields(
+  matches: FieldMatch[],
+  section: FieldSection,
+  entry: Record<string, unknown> | undefined
+): AutofillSummary {
+  let detected = 0
+  let filled = 0
+  let needsReview = 0
+
+  for (const match of matches) {
+    if (match.section !== section) continue
+    if (match.canonicalKey === null || match.confidence === 'low') continue
+    detected++
+
+    if (match.confidence === 'high') {
+      const value = entry?.[match.canonicalKey]
+      if (hasFillableValue(value)) {
         setFieldValue(match.field.element, value)
         filled++
       }
