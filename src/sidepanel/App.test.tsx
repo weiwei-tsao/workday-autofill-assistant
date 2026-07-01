@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { installChromeRuntimeMock } from '../../tests/chrome-runtime-mock'
 import { App } from './App'
@@ -25,13 +26,43 @@ describe('Side Panel App', () => {
   })
 
   it('shows "Workday page detected." when the content script reports a Workday page', async () => {
-    chrome.runtime.onMessage.addListener((_message, _sender, sendResponse) => {
-      sendResponse({ type: 'PAGE_STATUS', isWorkdayPage: true })
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message && typeof message === 'object' && 'type' in message) {
+        if (message.type === 'GET_PAGE_STATUS') {
+          sendResponse({ type: 'PAGE_STATUS', isWorkdayPage: true })
+        }
+      }
       return true
     })
 
     render(<App />)
 
     expect(await screen.findByText('Workday page detected.')).toBeInTheDocument()
+  })
+
+  it('runs autofill and displays the result summary when the button is clicked', async () => {
+    const user = userEvent.setup()
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message && typeof message === 'object' && 'type' in message) {
+        if (message.type === 'GET_PAGE_STATUS') {
+          sendResponse({ type: 'PAGE_STATUS', isWorkdayPage: true })
+        } else if (message.type === 'AUTOFILL_PAGE') {
+          sendResponse({
+            type: 'AUTOFILL_RESULT',
+            summary: { detected: 3, filled: 2, needsReview: 1 },
+          })
+        }
+      }
+      return true
+    })
+
+    render(<App />)
+    await screen.findByText('Workday page detected.')
+
+    await user.click(screen.getByRole('button', { name: 'Autofill current page' }))
+
+    expect(
+      await screen.findByText('Detected 3 supported fields. Filled 2 fields. 1 fields require review.')
+    ).toBeInTheDocument()
   })
 })
