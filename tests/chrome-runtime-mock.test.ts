@@ -33,4 +33,17 @@ describe('installChromeRuntimeMock', () => {
 
     expect(mock.getSidePanelBehavior()).toEqual({ openPanelOnActionClick: true })
   })
+
+  it('waits for an asynchronous sendResponse when a listener returns true', async () => {
+    installChromeRuntimeMock()
+
+    chrome.runtime.onMessage.addListener((_message, _sender, sendResponse) => {
+      Promise.resolve().then(() => sendResponse({ async: true }))
+      return true
+    })
+
+    const response = await chrome.tabs.sendMessage(1, { hello: 'world' })
+
+    expect(response).toEqual({ async: true })
+  })
 })

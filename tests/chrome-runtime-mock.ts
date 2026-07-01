@@ -32,13 +32,23 @@ export function installChromeRuntimeMock() {
     async sendMessage(tabId: number, message: unknown) {
       return new Promise((resolve) => {
         let responded = false
+        let keepChannelOpenForAsyncResponse = false
         messageListeners.forEach((listener) => {
-          listener(message, { tab: { id: tabId } } as chrome.runtime.MessageSender, (response) => {
-            responded = true
-            resolve(response)
-          })
+          const keepOpen = listener(
+            message,
+            { tab: { id: tabId } } as chrome.runtime.MessageSender,
+            (response) => {
+              if (!responded) {
+                responded = true
+                resolve(response)
+              }
+            }
+          )
+          if (keepOpen === true) keepChannelOpenForAsyncResponse = true
         })
-        if (!responded) resolve(undefined)
+        if (!responded && !keepChannelOpenForAsyncResponse) {
+          resolve(undefined)
+        }
       })
     },
   }
