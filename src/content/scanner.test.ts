@@ -101,4 +101,60 @@ describe('scanFields', () => {
     expect(fields[0].sectionHeadingText).toBe('Personal Information')
     expect(fields[1].sectionHeadingText).toBe('Education')
   })
+
+  it('falls back to a fieldset legend when there is no label association', () => {
+    document.body.innerHTML = `
+      <fieldset>
+        <legend>Would you consider relocating for this role?</legend>
+        <input type="text" />
+      </fieldset>
+    `
+
+    const fields = scanFields(document)
+
+    expect(fields[0].labelText).toBe('Would you consider relocating for this role?')
+  })
+
+  it('prefers a real label over a fieldset legend when both are present', () => {
+    document.body.innerHTML = `
+      <fieldset>
+        <legend>Contact details</legend>
+        <label for="email">Email Address</label>
+        <input id="email" type="text" />
+      </fieldset>
+    `
+
+    const fields = scanFields(document)
+
+    expect(fields[0].labelText).toBe('Email Address')
+  })
+
+  it('reproduces a real Workday custom-combobox structure (button + hidden text input inside a fieldset)', () => {
+    document.body.innerHTML = `
+      <div data-automation-id="formField-ccc084dd696010002a38cbc7dc290000" class="css-gvoll6">
+        <fieldset class="css-1s9yhc">
+          <legend>
+            <div id="rich-label45" class="css-f6y8ld">
+              <div data-automation-id="richText" class="css-1wx38f7">
+                <p><b>Would you consider relocating for this role?<abbr title="required" class="requiredAsterisk">*</abbr></b></p>
+              </div>
+            </div>
+          </legend>
+          <div class="css-15rz5ap">
+            <div style="width: 100%; max-width: 344px; min-width: 280px;">
+              <div class="css-12zup1l">
+                <button aria-haspopup="listbox" type="button" value="" aria-label=" Select One Required" name="ccc084dd696010002a38cbc7dc290000" id="primaryQuestionnaire--ccc084dd696010002a38cbc7dc290000" class="css-5bqb1n">Select One</button>
+                <input type="text" class="css-77hcv" value="">
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    `
+
+    const fields = scanFields(document)
+    const hiddenInput = fields.find((field) => field.element.matches('input[type="text"]'))
+
+    expect(hiddenInput?.labelText).toContain('Would you consider relocating for this role?')
+  })
 })
