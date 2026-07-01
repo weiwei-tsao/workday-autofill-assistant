@@ -204,14 +204,9 @@ Expected: FAIL — `Cannot find module './executor'`.
 
 `src/content/executor.ts`:
 ```ts
+import type { AutofillSummary } from '../shared/messaging/messages'
 import type { Profile } from '../shared/types/profile'
 import type { FieldMatch } from './matcher'
-
-export interface AutofillSummary {
-  detected: number
-  filled: number
-  needsReview: number
-}
 
 function setFieldValue(
   element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
@@ -276,7 +271,11 @@ git commit -m "feat(content): add autofill executor writing high-confidence matc
 
 Replace the contents of `src/shared/messaging/messages.ts`:
 ```ts
-import type { AutofillSummary } from '../../content/executor'
+export interface AutofillSummary {
+  detected: number
+  filled: number
+  needsReview: number
+}
 
 export interface GetPageStatusMessage {
   type: 'GET_PAGE_STATUS'
@@ -607,10 +606,18 @@ export function App() {
 
   async function handleAutofill() {
     if (!tabId) return
-    const response = (await chrome.tabs.sendMessage(tabId, {
-      type: 'AUTOFILL_PAGE',
-    })) as AutofillResultMessage
-    setSummary(response.summary)
+    try {
+      const response = (await chrome.tabs.sendMessage(tabId, {
+        type: 'AUTOFILL_PAGE',
+      })) as AutofillResultMessage | undefined
+      if (response?.summary) {
+        setSummary(response.summary)
+      }
+    } catch {
+      // The tab may have navigated away or the content script may no longer
+      // be listening — nothing to update; the button stays clickable so the
+      // user can retry.
+    }
   }
 
   return (

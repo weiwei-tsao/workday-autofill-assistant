@@ -1,4 +1,8 @@
-import type { AutofillSummary } from '../../content/executor'
+export interface AutofillSummary {
+  detected: number
+  filled: number
+  needsReview: number
+}
 
 export interface GetPageStatusMessage {
   type: 'GET_PAGE_STATUS'

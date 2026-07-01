@@ -72,4 +72,15 @@ describe('autofillFields', () => {
 
     expect(summary).toEqual({ detected: 0, filled: 0, needsReview: 0 })
   })
+
+  it('does not fill a high-confidence match when the profile value is an empty string', () => {
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />'
+    const matches = matchFields(scanFields(document))
+
+    const summary = autofillFields(matches, { ...profile, firstName: '' })
+
+    expect((document.getElementById('firstName') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
 })

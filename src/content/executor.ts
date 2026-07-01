@@ -1,11 +1,6 @@
+import type { AutofillSummary } from '../shared/messaging/messages'
 import type { Profile } from '../shared/types/profile'
 import type { FieldMatch } from './matcher'
-
-export interface AutofillSummary {
-  detected: number
-  filled: number
-  needsReview: number
-}
 
 function setFieldValue(
   element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
