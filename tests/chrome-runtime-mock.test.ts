@@ -15,8 +15,19 @@ describe('installChromeRuntimeMock', () => {
     expect(response).toEqual({ echoed: { hello: 'world' } })
   })
 
-  it('resolves undefined when no listener responds', async () => {
+  it('rejects when no listener is registered on the tab', async () => {
     installChromeRuntimeMock()
+
+    await expect(chrome.tabs.sendMessage(1, { hello: 'world' })).rejects.toThrow(
+      'Could not establish connection. Receiving end does not exist.'
+    )
+  })
+
+  it('resolves undefined when a listener is registered but never responds', async () => {
+    installChromeRuntimeMock()
+    chrome.runtime.onMessage.addListener(() => {
+      // registered but intentionally does not call sendResponse or return true
+    })
 
     const response = await chrome.tabs.sendMessage(1, { hello: 'world' })
 

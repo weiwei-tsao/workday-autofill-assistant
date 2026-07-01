@@ -30,6 +30,14 @@ export function installChromeRuntimeMock() {
       return [{ id: 1 }]
     },
     async sendMessage(tabId: number, message: unknown) {
+      if (messageListeners.size === 0) {
+        // Matches real chrome.tabs.sendMessage: when no content script is
+        // listening on the target tab at all, the call rejects rather than
+        // resolving undefined.
+        return Promise.reject(
+          new Error('Could not establish connection. Receiving end does not exist.')
+        )
+      }
       return new Promise((resolve) => {
         let responded = false
         let keepChannelOpenForAsyncResponse = false
