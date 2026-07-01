@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FIELD_DICTIONARY } from './field-dictionary'
+import { FIELD_DICTIONARY, COMMON_QUESTION_KEYS } from './field-dictionary'
 
 describe('FIELD_DICTIONARY', () => {
   it('maps common label synonyms to their canonical keys', () => {
@@ -44,5 +44,46 @@ describe('FIELD_DICTIONARY', () => {
   it('leaves personal-info fields section-agnostic', () => {
     const firstNameEntry = FIELD_DICTIONARY.find((entry) => entry.canonicalKey === 'firstName')
     expect(firstNameEntry?.section).toBeUndefined()
+  })
+
+  it('tags common question fields with canonical keys and leaves them section-agnostic', () => {
+    const byKey = (key: string) => FIELD_DICTIONARY.find((entry) => entry.canonicalKey === key)
+
+    expect(
+      byKey('workAuthorization')?.patterns.some((p) =>
+        p.test('Are you legally authorized to work in this country?')
+      )
+    ).toBe(true)
+    expect(
+      byKey('sponsorship')?.patterns.some((p) =>
+        p.test('Will you now or in the future require sponsorship?')
+      )
+    ).toBe(true)
+    expect(byKey('relocate')?.patterns.some((p) => p.test('Are you willing to relocate?'))).toBe(
+      true
+    )
+    expect(byKey('workArrangement')?.patterns.some((p) => p.test('Work arrangement'))).toBe(true)
+    expect(byKey('desiredSalary')?.patterns.some((p) => p.test('Desired salary'))).toBe(true)
+    expect(byKey('noticePeriod')?.patterns.some((p) => p.test('Notice period'))).toBe(true)
+    expect(byKey('yearsOfExperience')?.patterns.some((p) => p.test('Years of experience'))).toBe(
+      true
+    )
+    expect(
+      byKey('whyInterested')?.patterns.some((p) => p.test('Why are you interested in this role?'))
+    ).toBe(true)
+    expect(byKey('workAuthorization')?.section).toBeUndefined()
+  })
+
+  it('exports COMMON_QUESTION_KEYS containing exactly the 8 common-question canonical keys', () => {
+    expect(COMMON_QUESTION_KEYS.size).toBe(8)
+    expect(COMMON_QUESTION_KEYS.has('workAuthorization')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('sponsorship')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('relocate')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('workArrangement')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('desiredSalary')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('noticePeriod')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('yearsOfExperience')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('whyInterested')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('firstName')).toBe(false)
   })
 })

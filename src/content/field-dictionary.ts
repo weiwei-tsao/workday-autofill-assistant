@@ -59,4 +59,34 @@ export const FIELD_DICTIONARY: FieldDictionaryEntry[] = [
   { canonicalKey: 'endYear', patterns: [/end\s*year/i], section: 'education' },
   { canonicalKey: 'gpa', patterns: [/\bgpa\b/i], section: 'education' },
   { canonicalKey: 'description', patterns: [/description/i], section: 'education' },
+
+  // Common questions — section-agnostic, matches anywhere on the page
+  {
+    canonicalKey: 'workAuthorization',
+    patterns: [/legally\s*authorized/i, /authorized\s*to\s*work/i],
+  },
+  { canonicalKey: 'sponsorship', patterns: [/sponsorship/i] },
+  { canonicalKey: 'relocate', patterns: [/willing\s*to\s*relocate/i, /relocation/i] },
+  {
+    canonicalKey: 'workArrangement',
+    patterns: [/work\s*arrangement/i, /remote.*hybrid.*onsite/i],
+  },
+  {
+    canonicalKey: 'desiredSalary',
+    patterns: [/desired\s*salary/i, /salary\s*expectation/i, /compensation\s*expectation/i],
+  },
+  { canonicalKey: 'noticePeriod', patterns: [/notice\s*period/i, /earliest\s*start\s*date/i] },
+  { canonicalKey: 'yearsOfExperience', patterns: [/years?\s*of\s*experience/i] },
+  { canonicalKey: 'whyInterested', patterns: [/why.*interested/i] },
 ]
+
+export const COMMON_QUESTION_KEYS = new Set<string>([
+  'workAuthorization',
+  'sponsorship',
+  'relocate',
+  'workArrangement',
+  'desiredSalary',
+  'noticePeriod',
+  'yearsOfExperience',
+  'whyInterested',
+])
