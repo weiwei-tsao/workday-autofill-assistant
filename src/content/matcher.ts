@@ -1,4 +1,4 @@
-import { FIELD_DICTIONARY } from './field-dictionary'
+import { FIELD_DICTIONARY, type FieldSection } from './field-dictionary'
 import type { ScannedField } from './scanner'
 
 export type ConfidenceLevel = 'high' | 'medium' | 'low'
@@ -6,8 +6,18 @@ export type ConfidenceLevel = 'high' | 'medium' | 'low'
 export interface FieldMatch {
   field: ScannedField
   canonicalKey: string | null
+  section: FieldSection | null
   score: number
   confidence: ConfidenceLevel
+}
+
+const WORK_EXPERIENCE_HEADING_PATTERN = /work\s*experience/i
+const EDUCATION_HEADING_PATTERN = /education/i
+
+function detectSection(sectionHeadingText: string): FieldSection | null {
+  if (WORK_EXPERIENCE_HEADING_PATTERN.test(sectionHeadingText)) return 'workExperience'
+  if (EDUCATION_HEADING_PATTERN.test(sectionHeadingText)) return 'education'
+  return null
 }
 
 function scoreAgainstEntry(field: ScannedField, patterns: RegExp[]): number {
@@ -26,10 +36,13 @@ function confidenceFor(score: number): ConfidenceLevel {
 }
 
 export function matchField(field: ScannedField): FieldMatch {
+  const section = detectSection(field.sectionHeadingText)
+
   let bestKey: string | null = null
   let bestScore = 0
 
   for (const entry of FIELD_DICTIONARY) {
+    if (entry.section && entry.section !== section) continue
     const score = scoreAgainstEntry(field, entry.patterns)
     if (score > bestScore) {
       bestScore = score
@@ -40,6 +53,7 @@ export function matchField(field: ScannedField): FieldMatch {
   return {
     field,
     canonicalKey: bestScore > 0 ? bestKey : null,
+    section,
     score: bestScore,
     confidence: confidenceFor(bestScore),
   }

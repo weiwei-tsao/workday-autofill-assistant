@@ -61,3 +61,69 @@ describe('matchFields', () => {
     expect(matches.map((m) => m.canonicalKey)).toEqual(['firstName', 'lastName', 'email'])
   })
 })
+
+describe('section-aware matching', () => {
+  it('matches a Work Experience field only when the section heading indicates Work Experience', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Work Experience</h2>
+        <label for="companyName">Company Name</label>
+        <input id="companyName" name="companyName" />
+      </section>
+    `
+    const field = scanFields(document)[0]
+
+    const match = matchField(field)
+
+    expect(match.canonicalKey).toBe('companyName')
+    expect(match.section).toBe('workExperience')
+    expect(match.confidence).toBe('high')
+  })
+
+  it('disambiguates "Location" between Work Experience and Education sections', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Work Experience</h2>
+        <input aria-label="Location" />
+      </section>
+      <section>
+        <h2>Education</h2>
+        <input aria-label="Location" />
+      </section>
+    `
+    const fields = scanFields(document)
+
+    const workExperienceMatch = matchField(fields[0])
+    const educationMatch = matchField(fields[1])
+
+    expect(workExperienceMatch.canonicalKey).toBe('location')
+    expect(workExperienceMatch.section).toBe('workExperience')
+    expect(educationMatch.canonicalKey).toBe('location')
+    expect(educationMatch.section).toBe('education')
+  })
+
+  it('does not match a work-experience-only field when there is no section heading', () => {
+    document.body.innerHTML = '<label for="cn">Company Name</label><input id="cn" name="cn" />'
+    const field = scanFields(document)[0]
+
+    const match = matchField(field)
+
+    expect(match.canonicalKey).toBeNull()
+    expect(match.section).toBeNull()
+  })
+
+  it('still matches section-agnostic personal-info fields inside a labelled section', () => {
+    document.body.innerHTML = `
+      <section>
+        <h2>Personal Information</h2>
+        <label for="email">Email Address</label>
+        <input id="email" name="email" type="email" />
+      </section>
+    `
+    const field = scanFields(document)[0]
+
+    const match = matchField(field)
+
+    expect(match.canonicalKey).toBe('email')
+  })
+})
