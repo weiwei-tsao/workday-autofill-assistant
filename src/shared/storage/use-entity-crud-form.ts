@@ -21,7 +21,7 @@ export function useEntityCrudForm<T extends { id: string }, TFormValues>(
     if (editingId) {
       await repository.update(editingId, values as Partial<T>)
     } else {
-      await repository.add({ id: crypto.randomUUID(), ...values } as T)
+      await repository.add({ id: crypto.randomUUID(), ...values } as unknown as T)
     }
     setEditingId(null)
     reset(emptyValues)
