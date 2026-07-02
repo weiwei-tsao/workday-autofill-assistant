@@ -32,4 +32,12 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Application records' }))
     expect(screen.getByLabelText('Application record form')).toBeInTheDocument()
   })
+
+  it('shows the import/export tab', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Import / Export' }))
+    expect(screen.getByRole('button', { name: 'Export data' })).toBeInTheDocument()
+  })
 })

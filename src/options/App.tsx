@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnswerBankPage } from './answer-bank/AnswerBankPage'
 import { ApplicationRecordsPage } from './application-records/ApplicationRecordsPage'
 import { EducationPage } from './education/EducationPage'
+import { ImportExportPage } from './import-export/ImportExportPage'
 import { PersonalInfoPage } from './personal-info/PersonalInfoPage'
 import { WorkExperiencePage } from './work-experience/WorkExperiencePage'
 
@@ -11,6 +12,7 @@ const TABS = [
   { key: 'education', label: 'Education' },
   { key: 'answers', label: 'Answer bank' },
   { key: 'applications', label: 'Application records' },
+  { key: 'import-export', label: 'Import / Export' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
@@ -38,6 +40,7 @@ export function App() {
       {activeTab === 'education' && <EducationPage />}
       {activeTab === 'answers' && <AnswerBankPage />}
       {activeTab === 'applications' && <ApplicationRecordsPage />}
+      {activeTab === 'import-export' && <ImportExportPage />}
     </div>
   )
 }
