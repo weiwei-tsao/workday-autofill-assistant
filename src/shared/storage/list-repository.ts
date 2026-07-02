@@ -29,5 +29,9 @@ export function createListRepository<T extends Identifiable>(storageKey: string)
     )
   }
 
-  return { list, add, update, remove }
+  async function replaceAll(items: T[]): Promise<void> {
+    await setLocal(storageKey, items)
+  }
+
+  return { list, add, update, remove, replaceAll }
 }

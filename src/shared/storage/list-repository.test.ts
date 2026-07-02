@@ -36,4 +36,19 @@ describe('createListRepository', () => {
     await repository.remove('2')
     expect(await repository.list()).toEqual([{ id: '1', name: 'First updated' }])
   })
+
+  it('replaces the entire list at once', async () => {
+    const repository = createListRepository<Widget>('widgets')
+
+    await repository.add({ id: '1', name: 'First' })
+    await repository.replaceAll([
+      { id: '2', name: 'Second' },
+      { id: '3', name: 'Third' },
+    ])
+
+    expect(await repository.list()).toEqual([
+      { id: '2', name: 'Second' },
+      { id: '3', name: 'Third' },
+    ])
+  })
 })
