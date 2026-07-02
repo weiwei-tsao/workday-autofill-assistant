@@ -1,14 +1,18 @@
 import { getProfile } from '../shared/storage/profile-repository'
 import { answerBankRepository } from '../shared/storage/answer-bank-repository'
+import { applicationRecordRepository } from '../shared/storage/application-record-repository'
 import { educationRepository } from '../shared/storage/education-repository'
 import { workExperienceRepository } from '../shared/storage/work-experience-repository'
 import type {
+  ApplicationSavedMessage,
   AutofillResultMessage,
   AutofillSummary,
   ExtensionMessage,
   PageStatusMessage,
 } from '../shared/messaging/messages'
+import type { ApplicationRecord } from '../shared/types/application-record'
 import type { Profile } from '../shared/types/profile'
+import { extractApplicationInfo } from './application-extractor'
 import { COMMON_QUESTION_KEYS } from './field-dictionary'
 import { isWorkdayPage } from './detector'
 import { autofillAnswerBankFields, autofillFields, autofillSectionFields } from './executor'
@@ -30,7 +34,9 @@ chrome.runtime.onMessage.addListener(
   (
     message: ExtensionMessage,
     _sender,
-    sendResponse: (response: PageStatusMessage | AutofillResultMessage) => void
+    sendResponse: (
+      response: PageStatusMessage | AutofillResultMessage | ApplicationSavedMessage
+    ) => void
   ) => {
     if (message.type === 'GET_PAGE_STATUS') {
       sendResponse({
@@ -68,6 +74,24 @@ chrome.runtime.onMessage.addListener(
         ])
 
         sendResponse({ type: 'AUTOFILL_RESULT', summary })
+      })
+      return true
+    }
+
+    if (message.type === 'SAVE_APPLICATION') {
+      const info = extractApplicationInfo(document)
+      const record: ApplicationRecord = {
+        id: crypto.randomUUID(),
+        companyName: info.companyName,
+        jobTitle: info.jobTitle,
+        jobLocation: info.jobLocation || undefined,
+        jobUrl: info.jobUrl,
+        applicationDate: info.applicationDate,
+        sourcePlatform: 'Workday',
+        status: 'Applied',
+      }
+      applicationRecordRepository.add(record).then(() => {
+        sendResponse({ type: 'APPLICATION_SAVED', record })
       })
       return true
     }

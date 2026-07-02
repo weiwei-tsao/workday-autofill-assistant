@@ -1,3 +1,5 @@
+import type { ApplicationRecord } from '../types/application-record'
+
 export interface AutofillSummary {
   detected: number
   filled: number
@@ -22,8 +24,19 @@ export interface AutofillResultMessage {
   summary: AutofillSummary
 }
 
+export interface SaveApplicationMessage {
+  type: 'SAVE_APPLICATION'
+}
+
+export interface ApplicationSavedMessage {
+  type: 'APPLICATION_SAVED'
+  record: ApplicationRecord
+}
+
 export type ExtensionMessage =
   | GetPageStatusMessage
   | PageStatusMessage
   | AutofillPageMessage
   | AutofillResultMessage
+  | SaveApplicationMessage
+  | ApplicationSavedMessage

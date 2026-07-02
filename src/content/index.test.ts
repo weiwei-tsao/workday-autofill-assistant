@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { installChromeRuntimeMock } from '../../tests/chrome-runtime-mock'
 import { installChromeStorageMock } from '../../tests/chrome-storage-mock'
+import { applicationRecordRepository } from '../shared/storage/application-record-repository'
 import { answerBankRepository } from '../shared/storage/answer-bank-repository'
 import { educationRepository } from '../shared/storage/education-repository'
 import { saveProfile } from '../shared/storage/profile-repository'
@@ -229,5 +230,24 @@ describe('content script entry', () => {
       type: 'AUTOFILL_RESULT',
       summary: { detected: 2, filled: 1, needsReview: 0 },
     })
+  })
+
+  it('extracts and saves an application record on SAVE_APPLICATION', async () => {
+    document.body.innerHTML = '<h1>Software Engineer</h1>'
+    document.title = 'Software Engineer - Acme Careers'
+    await import('./index')
+
+    const response = (await chrome.tabs.sendMessage(1, {
+      type: 'SAVE_APPLICATION',
+    })) as { type: string; record: { jobTitle: string; status: string; sourcePlatform: string } }
+
+    expect(response.type).toBe('APPLICATION_SAVED')
+    expect(response.record.jobTitle).toBe('Software Engineer')
+    expect(response.record.status).toBe('Applied')
+    expect(response.record.sourcePlatform).toBe('Workday')
+
+    const saved = await applicationRecordRepository.list()
+    expect(saved).toHaveLength(1)
+    expect(saved[0].jobTitle).toBe('Software Engineer')
   })
 })
