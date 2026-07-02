@@ -98,4 +98,54 @@ describe('Side Panel App', () => {
       await screen.findByText('Saved application for Software Engineer at Acme.')
     ).toBeInTheDocument()
   })
+
+  it('shows a "some fields were skipped" message when skipped fields exist', async () => {
+    const user = userEvent.setup()
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message && typeof message === 'object' && 'type' in message) {
+        if (message.type === 'GET_PAGE_STATUS') {
+          sendResponse({ type: 'PAGE_STATUS', isWorkdayPage: true })
+        } else if (message.type === 'AUTOFILL_PAGE') {
+          sendResponse({
+            type: 'AUTOFILL_RESULT',
+            summary: { detected: 1, filled: 1, needsReview: 0, skipped: 2, hasMoreEntries: false },
+          })
+        }
+      }
+      return true
+    })
+
+    render(<App />)
+    await screen.findByText('Workday page detected.')
+    await user.click(screen.getByRole('button', { name: 'Autofill current page' }))
+
+    expect(await screen.findByText('Some fields were skipped.')).toBeInTheDocument()
+  })
+
+  it('shows a guidance message when more than one work experience or education entry is stored', async () => {
+    const user = userEvent.setup()
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message && typeof message === 'object' && 'type' in message) {
+        if (message.type === 'GET_PAGE_STATUS') {
+          sendResponse({ type: 'PAGE_STATUS', isWorkdayPage: true })
+        } else if (message.type === 'AUTOFILL_PAGE') {
+          sendResponse({
+            type: 'AUTOFILL_RESULT',
+            summary: { detected: 1, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: true },
+          })
+        }
+      }
+      return true
+    })
+
+    render(<App />)
+    await screen.findByText('Workday page detected.')
+    await user.click(screen.getByRole('button', { name: 'Autofill current page' }))
+
+    expect(
+      await screen.findByText(
+        'If Workday has additional entries to fill, click "Add" on the page for the next Work Experience or Education entry, then click Autofill again.'
+      )
+    ).toBeInTheDocument()
+  })
 })

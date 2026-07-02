@@ -89,10 +89,19 @@ export function App() {
             Autofill current page
           </button>
           {summary && (
-            <p>
-              Detected {summary.detected} supported fields. Filled {summary.filled} fields.
-              {summary.needsReview > 0 ? ` ${summary.needsReview} fields require review.` : ''}
-            </p>
+            <>
+              <p>
+                Detected {summary.detected} supported fields. Filled {summary.filled} fields.
+                {summary.needsReview > 0 ? ` ${summary.needsReview} fields require review.` : ''}
+              </p>
+              {summary.skipped > 0 && <p>Some fields were skipped.</p>}
+              {summary.hasMoreEntries && (
+                <p>
+                  If Workday has additional entries to fill, click &quot;Add&quot; on the page for
+                  the next Work Experience or Education entry, then click Autofill again.
+                </p>
+              )}
+            </>
           )}
           <button type="button" onClick={handleSaveApplication}>
             Save application
