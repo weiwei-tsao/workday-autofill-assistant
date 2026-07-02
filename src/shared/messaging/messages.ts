@@ -6,6 +6,11 @@ export interface AutofillSummary {
   needsReview: number
 }
 
+export interface AutofillResultSummary extends AutofillSummary {
+  skipped: number
+  hasMoreEntries: boolean
+}
+
 export interface GetPageStatusMessage {
   type: 'GET_PAGE_STATUS'
 }
@@ -21,7 +26,7 @@ export interface AutofillPageMessage {
 
 export interface AutofillResultMessage {
   type: 'AUTOFILL_RESULT'
-  summary: AutofillSummary
+  summary: AutofillResultSummary
 }
 
 export interface SaveApplicationMessage {

@@ -73,7 +73,15 @@ chrome.runtime.onMessage.addListener(
           autofillAnswerBankFields(commonQuestionMatches, answerBank),
         ])
 
-        sendResponse({ type: 'AUTOFILL_RESULT', summary })
+        const skipped = matches.filter(
+          (match) => match.canonicalKey === null || match.confidence === 'low'
+        ).length
+        const hasMoreEntries = workExperiences.length > 1 || educations.length > 1
+
+        sendResponse({
+          type: 'AUTOFILL_RESULT',
+          summary: { ...summary, skipped, hasMoreEntries },
+        })
       })
       return true
     }

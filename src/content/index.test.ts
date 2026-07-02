@@ -58,7 +58,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 1, needsReview: 0 },
+      summary: { detected: 1, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
     expect((document.getElementById('firstName') as HTMLInputElement).value).toBe('Ada')
   })
@@ -72,7 +72,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 0, needsReview: 0 },
+      summary: { detected: 1, filled: 0, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
   })
 
@@ -87,7 +87,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 0, needsReview: 1 },
+      summary: { detected: 1, filled: 0, needsReview: 1, skipped: 0, hasMoreEntries: false },
     })
   })
 
@@ -113,7 +113,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 1, needsReview: 0 },
+      summary: { detected: 1, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
     expect((document.getElementById('companyName') as HTMLInputElement).value).toBe('Acme')
   })
@@ -139,7 +139,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 1, needsReview: 0 },
+      summary: { detected: 1, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
     expect((document.getElementById('schoolName') as HTMLInputElement).value).toBe('MIT')
   })
@@ -168,7 +168,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 2, filled: 2, needsReview: 0 },
+      summary: { detected: 2, filled: 2, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
   })
 
@@ -190,7 +190,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 1, needsReview: 0 },
+      summary: { detected: 1, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
     expect((document.getElementById('salary') as HTMLInputElement).value).toBe('$120,000')
   })
@@ -213,7 +213,7 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 1, filled: 0, needsReview: 0 },
+      summary: { detected: 1, filled: 0, needsReview: 0, skipped: 0, hasMoreEntries: false },
     })
   })
 
@@ -228,7 +228,51 @@ describe('content script entry', () => {
 
     expect(response).toEqual({
       type: 'AUTOFILL_RESULT',
-      summary: { detected: 2, filled: 1, needsReview: 0 },
+      summary: { detected: 2, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: false },
+    })
+  })
+
+  it('reports a nonzero skipped count for fields that do not match any canonical key', async () => {
+    await saveProfile(profile)
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />' +
+      '<label for="unrelated">Favorite Color</label><input id="unrelated" name="unrelated" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 1, needsReview: 0, skipped: 1, hasMoreEntries: false },
+    })
+  })
+
+  it('reports hasMoreEntries true when more than one work experience entry is stored', async () => {
+    await workExperienceRepository.add({
+      id: '1',
+      companyName: 'Acme',
+      jobTitle: 'Engineer',
+      startMonth: 3,
+      startYear: 2020,
+      currentlyWorking: true,
+    })
+    await workExperienceRepository.add({
+      id: '2',
+      companyName: 'Globex',
+      jobTitle: 'Manager',
+      startMonth: 1,
+      startYear: 2022,
+      currentlyWorking: false,
+    })
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 0, needsReview: 0, skipped: 0, hasMoreEntries: true },
     })
   })
 
