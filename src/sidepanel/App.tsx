@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import type { AutofillResultMessage, PageStatusMessage } from '../shared/messaging/messages'
+import type {
+  ApplicationSavedMessage,
+  AutofillResultMessage,
+  PageStatusMessage,
+} from '../shared/messaging/messages'
 
 type Status = 'loading' | 'workday-detected' | 'not-workday'
 
@@ -7,6 +11,9 @@ export function App() {
   const [status, setStatus] = useState<Status>('loading')
   const [tabId, setTabId] = useState<number | undefined>(undefined)
   const [summary, setSummary] = useState<AutofillResultMessage['summary'] | undefined>(undefined)
+  const [savedRecord, setSavedRecord] = useState<ApplicationSavedMessage['record'] | undefined>(
+    undefined
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -55,6 +62,21 @@ export function App() {
     }
   }
 
+  async function handleSaveApplication() {
+    if (!tabId) return
+    try {
+      const response = (await chrome.tabs.sendMessage(tabId, {
+        type: 'SAVE_APPLICATION',
+      })) as ApplicationSavedMessage | undefined
+      if (response?.record) {
+        setSavedRecord(response.record)
+      }
+    } catch {
+      // Same as handleAutofill: the tab may have navigated away or the
+      // content script may no longer be listening.
+    }
+  }
+
   return (
     <div className="p-4">
       <h1 className="text-lg font-semibold mb-2">Workday Autofill Assistant</h1>
@@ -70,6 +92,14 @@ export function App() {
             <p>
               Detected {summary.detected} supported fields. Filled {summary.filled} fields.
               {summary.needsReview > 0 ? ` ${summary.needsReview} fields require review.` : ''}
+            </p>
+          )}
+          <button type="button" onClick={handleSaveApplication}>
+            Save application
+          </button>
+          {savedRecord && (
+            <p>
+              Saved application for {savedRecord.jobTitle} at {savedRecord.companyName}.
             </p>
           )}
         </>

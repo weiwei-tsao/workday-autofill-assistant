@@ -65,4 +65,37 @@ describe('Side Panel App', () => {
       await screen.findByText('Detected 3 supported fields. Filled 2 fields. 1 fields require review.')
     ).toBeInTheDocument()
   })
+
+  it('saves the application and displays a confirmation when the button is clicked', async () => {
+    const user = userEvent.setup()
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      if (message && typeof message === 'object' && 'type' in message) {
+        if (message.type === 'GET_PAGE_STATUS') {
+          sendResponse({ type: 'PAGE_STATUS', isWorkdayPage: true })
+        } else if (message.type === 'SAVE_APPLICATION') {
+          sendResponse({
+            type: 'APPLICATION_SAVED',
+            record: {
+              id: '1',
+              companyName: 'Acme',
+              jobTitle: 'Software Engineer',
+              applicationDate: '2026-07-01',
+              sourcePlatform: 'Workday',
+              status: 'Applied',
+            },
+          })
+        }
+      }
+      return true
+    })
+
+    render(<App />)
+    await screen.findByText('Workday page detected.')
+
+    await user.click(screen.getByRole('button', { name: 'Save application' }))
+
+    expect(
+      await screen.findByText('Saved application for Software Engineer at Acme.')
+    ).toBeInTheDocument()
+  })
 })
