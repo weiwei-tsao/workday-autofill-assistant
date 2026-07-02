@@ -24,4 +24,12 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Answer bank' }))
     expect(screen.getByLabelText('Answer bank form')).toBeInTheDocument()
   })
+
+  it('shows the application records tab', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Application records' }))
+    expect(screen.getByLabelText('Application record form')).toBeInTheDocument()
+  })
 })

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnswerBankPage } from './answer-bank/AnswerBankPage'
+import { ApplicationRecordsPage } from './application-records/ApplicationRecordsPage'
 import { EducationPage } from './education/EducationPage'
 import { PersonalInfoPage } from './personal-info/PersonalInfoPage'
 import { WorkExperiencePage } from './work-experience/WorkExperiencePage'
@@ -9,6 +10,7 @@ const TABS = [
   { key: 'work', label: 'Work experience' },
   { key: 'education', label: 'Education' },
   { key: 'answers', label: 'Answer bank' },
+  { key: 'applications', label: 'Application records' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
@@ -35,6 +37,7 @@ export function App() {
       {activeTab === 'work' && <WorkExperiencePage />}
       {activeTab === 'education' && <EducationPage />}
       {activeTab === 'answers' && <AnswerBankPage />}
+      {activeTab === 'applications' && <ApplicationRecordsPage />}
     </div>
   )
 }
