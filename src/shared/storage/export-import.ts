@@ -25,6 +25,9 @@ export async function buildExportBundle(): Promise<ExportBundle> {
   }
 }
 
+// ponytail: no rollback if one write rejects (e.g. storage quota) — sibling
+// writes that already landed stay applied. Upgrade to read-all-then-write-all
+// with a restore-on-failure path if quota exhaustion ever becomes a real complaint.
 export async function restoreFromBundle(bundle: ExportBundle): Promise<void> {
   await Promise.all([
     bundle.profile ? saveProfile(bundle.profile) : Promise.resolve(),
