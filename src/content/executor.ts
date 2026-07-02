@@ -12,6 +12,19 @@ function hasFillableValue(value: unknown): value is FillableValue {
   return typeof value === 'number' || typeof value === 'boolean'
 }
 
+function highlightField(
+  element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+): void {
+  const originalOutline = element.style.outline
+  const originalTransition = element.style.transition
+  element.style.transition = 'outline 0.2s ease-in-out'
+  element.style.outline = '2px solid #22c55e'
+  setTimeout(() => {
+    element.style.outline = originalOutline
+    element.style.transition = originalTransition
+  }, 1500)
+}
+
 function setFieldValue(
   element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
   value: FillableValue
@@ -24,6 +37,7 @@ function setFieldValue(
   element.dispatchEvent(new Event('input', { bubbles: true }))
   element.dispatchEvent(new Event('change', { bubbles: true }))
   element.dispatchEvent(new Event('blur', { bubbles: true }))
+  highlightField(element)
 }
 
 export function autofillFields(matches: FieldMatch[], profile: Profile): AutofillSummary {

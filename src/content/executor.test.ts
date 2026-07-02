@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { Profile } from '../shared/types/profile'
 import type { WorkExperience } from '../shared/types/work-experience'
 import type { AnswerBankEntry } from '../shared/types/answer-bank'
@@ -228,5 +228,37 @@ describe('autofillAnswerBankFields', () => {
 
     expect((document.getElementById('salary') as HTMLInputElement).value).toBe('')
     expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+})
+
+describe('field highlight on fill', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('briefly highlights a field after filling it, then reverts the style', () => {
+    vi.useFakeTimers()
+    document.body.innerHTML =
+      '<label for="firstName">First Name</label><input id="firstName" name="firstName" />'
+    const matches = matchFields(scanFields(document))
+
+    autofillFields(matches, profile)
+
+    const element = document.getElementById('firstName') as HTMLInputElement
+    expect(element.style.outline).toBe('2px solid #22c55e')
+
+    vi.advanceTimersByTime(1500)
+
+    expect(element.style.outline).toBe('')
+  })
+
+  it('does not apply a highlight when a field is not actually filled', () => {
+    document.body.innerHTML = '<label for="fn">Given Name</label><input id="fn" name="fn" />'
+    const matches = matchFields(scanFields(document))
+
+    autofillFields(matches, profile)
+
+    const element = document.getElementById('fn') as HTMLInputElement
+    expect(element.style.outline).toBe('')
   })
 })
