@@ -26,6 +26,20 @@ describe('extractApplicationInfo', () => {
     expect(info.jobTitle).toBe('Software Engineer')
   })
 
+  it('prefers the jobTitleHeading data-automation-id over a generic h1', () => {
+    document.body.innerHTML =
+      '<h1>Careers at Acme</h1>' +
+      '<h2 data-automation-id="jobTitleHeading">Sr. Program Manager</h2>'
+
+    const info = extractApplicationInfo(
+      document,
+      'https://acme.wd5.myworkdayjobs.com/job/1',
+      'acme.wd5.myworkdayjobs.com'
+    )
+
+    expect(info.jobTitle).toBe('Sr. Program Manager')
+  })
+
   it('falls back to document.title when there is no h1', () => {
     document.body.innerHTML = ''
     document.title = 'Software Engineer - Acme Careers'

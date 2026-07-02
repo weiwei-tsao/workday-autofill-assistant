@@ -13,6 +13,8 @@ function extractCompanyName(hostname: string): string {
 }
 
 function extractJobTitle(doc: Document): string {
+  const jobTitleHeading = doc.querySelector('[data-automation-id="jobTitleHeading"]')
+  if (jobTitleHeading?.textContent?.trim()) return jobTitleHeading.textContent.trim()
   const heading = doc.querySelector('h1')
   if (heading?.textContent?.trim()) return heading.textContent.trim()
   return doc.title.trim()
