@@ -4,6 +4,7 @@ import { ApplicationRecordsPage } from './application-records/ApplicationRecords
 import { EducationPage } from './education/EducationPage'
 import { ImportExportPage } from './import-export/ImportExportPage'
 import { PersonalInfoPage } from './personal-info/PersonalInfoPage'
+import { PrivacySettingsPage } from './privacy-settings/PrivacySettingsPage'
 import { WorkExperiencePage } from './work-experience/WorkExperiencePage'
 
 const TABS = [
@@ -13,6 +14,7 @@ const TABS = [
   { key: 'answers', label: 'Answer bank' },
   { key: 'applications', label: 'Application records' },
   { key: 'import-export', label: 'Import / Export' },
+  { key: 'privacy', label: 'Privacy settings' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
@@ -41,6 +43,7 @@ export function App() {
       {activeTab === 'answers' && <AnswerBankPage />}
       {activeTab === 'applications' && <ApplicationRecordsPage />}
       {activeTab === 'import-export' && <ImportExportPage />}
+      {activeTab === 'privacy' && <PrivacySettingsPage />}
     </div>
   )
 }

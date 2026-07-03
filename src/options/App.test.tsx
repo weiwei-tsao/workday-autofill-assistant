@@ -40,4 +40,12 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Import / Export' }))
     expect(screen.getByRole('button', { name: 'Export data' })).toBeInTheDocument()
   })
+
+  it('shows the privacy settings tab', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Privacy settings' }))
+    expect(await screen.findByLabelText('Allow auto-fill for Gender')).toBeInTheDocument()
+  })
 })
