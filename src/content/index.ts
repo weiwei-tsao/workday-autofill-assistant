@@ -2,6 +2,7 @@ import { getProfile } from '../shared/storage/profile-repository'
 import { answerBankRepository } from '../shared/storage/answer-bank-repository'
 import { applicationRecordRepository } from '../shared/storage/application-record-repository'
 import { educationRepository } from '../shared/storage/education-repository'
+import { getPrivacySettings } from '../shared/storage/privacy-settings-repository'
 import { workExperienceRepository } from '../shared/storage/work-experience-repository'
 import type {
   ApplicationSavedMessage,
@@ -52,7 +53,8 @@ chrome.runtime.onMessage.addListener(
         workExperienceRepository.list(),
         educationRepository.list(),
         answerBankRepository.list(),
-      ]).then(([profile, workExperiences, educations, answerBank]) => {
+        getPrivacySettings(),
+      ]).then(([profile, workExperiences, educations, answerBank, privacySettings]) => {
         const matches = matchFields(scanFields(document))
         const sectionAgnosticMatches = matches.filter((match) => match.section === null)
         const commonQuestionMatches = sectionAgnosticMatches.filter(
@@ -70,7 +72,7 @@ chrome.runtime.onMessage.addListener(
           autofillFields(personalInfoMatches, profile ?? ({} as Profile)),
           autofillSectionFields(workExperienceMatches, 'workExperience', workExperiences[0]),
           autofillSectionFields(educationMatches, 'education', educations[0]),
-          autofillAnswerBankFields(commonQuestionMatches, answerBank),
+          autofillAnswerBankFields(commonQuestionMatches, answerBank, privacySettings),
         ])
 
         const skipped = matches.filter(

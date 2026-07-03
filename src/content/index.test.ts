@@ -5,6 +5,7 @@ import { applicationRecordRepository } from '../shared/storage/application-recor
 import { answerBankRepository } from '../shared/storage/answer-bank-repository'
 import { educationRepository } from '../shared/storage/education-repository'
 import { saveProfile } from '../shared/storage/profile-repository'
+import { savePrivacySettings } from '../shared/storage/privacy-settings-repository'
 import { workExperienceRepository } from '../shared/storage/work-experience-repository'
 import type { Profile } from '../shared/types/profile'
 
@@ -293,5 +294,35 @@ describe('content script entry', () => {
     const saved = await applicationRecordRepository.list()
     expect(saved).toHaveLength(1)
     expect(saved[0].jobTitle).toBe('Software Engineer')
+  })
+
+  it('fills a sensitive demographic field only when its category is allowed in privacy settings', async () => {
+    await answerBankRepository.add({
+      id: '1',
+      questionKey: 'veteranStatus',
+      questionLabel: 'Veteran status',
+      type: 'yesNo',
+      value: 'No',
+      isSensitive: true,
+      sensitiveCategory: 'veteranStatus',
+      autoFillEnabled: false,
+    })
+    await savePrivacySettings({
+      allowGenderAutoFill: false,
+      allowRaceAutoFill: false,
+      allowDisabilityAutoFill: false,
+      allowVeteranStatusAutoFill: true,
+    })
+    document.body.innerHTML =
+      '<label for="vet">Veteran status</label><input id="vet" name="veteranStatus" />'
+    await import('./index')
+
+    const response = await chrome.tabs.sendMessage(1, { type: 'AUTOFILL_PAGE' })
+
+    expect(response).toEqual({
+      type: 'AUTOFILL_RESULT',
+      summary: { detected: 1, filled: 1, needsReview: 0, skipped: 0, hasMoreEntries: false },
+    })
+    expect((document.getElementById('vet') as HTMLInputElement).value).toBe('No')
   })
 })
