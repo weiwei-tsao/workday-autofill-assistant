@@ -11,6 +11,7 @@ const emptyValues: AnswerBankFormValues = {
   type: 'yesNo',
   value: '',
   isSensitive: false,
+  sensitiveCategory: '',
   autoFillEnabled: true,
 }
 
@@ -97,6 +98,17 @@ export function AnswerBankPage() {
             />
             Sensitive question
           </label>
+        </div>
+        <div>
+          <label htmlFor="sensitiveCategory">Sensitive category (if applicable)</label>
+          <select id="sensitiveCategory" {...register('sensitiveCategory')}>
+            <option value="">Not applicable</option>
+            <option value="gender">Gender</option>
+            <option value="race">Race / Ethnicity</option>
+            <option value="disability">Disability status</option>
+            <option value="veteranStatus">Veteran status</option>
+            <option value="other">Other sensitive category</option>
+          </select>
         </div>
         <div>
           <label htmlFor="autoFillEnabled">

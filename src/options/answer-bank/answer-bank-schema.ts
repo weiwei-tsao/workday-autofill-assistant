@@ -1,5 +1,10 @@
 import { z } from 'zod'
 
+const optionalSensitiveCategory = z.preprocess(
+  (val) => (val === '' ? undefined : val),
+  z.enum(['gender', 'race', 'disability', 'veteranStatus', 'other']).optional()
+)
+
 export const answerBankFormSchema = z
   .object({
     questionKey: z.string().min(1, 'Question key is required'),
@@ -7,6 +12,7 @@ export const answerBankFormSchema = z
     type: z.enum(['yesNo', 'text', 'select']),
     value: z.string().min(1, 'Answer value is required'),
     isSensitive: z.boolean(),
+    sensitiveCategory: optionalSensitiveCategory,
     autoFillEnabled: z.boolean(),
   })
   .transform((values) => ({

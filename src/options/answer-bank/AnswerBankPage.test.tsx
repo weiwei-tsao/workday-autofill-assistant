@@ -38,4 +38,23 @@ describe('AnswerBankPage', () => {
     const result = answerBankFormSchema.parse(input)
     expect(result.autoFillEnabled).toBe(false)
   })
+
+  it('saves a sensitive category selection alongside the sensitive flag', async () => {
+    const user = userEvent.setup()
+    render(<AnswerBankPage />)
+
+    await user.type(screen.getByLabelText('Question key'), 'veteranStatus')
+    await user.type(screen.getByLabelText('Question label'), 'Are you a veteran?')
+    await user.selectOptions(screen.getByLabelText('Question type'), 'yesNo')
+    await user.type(screen.getByLabelText('Answer'), 'No')
+    await user.click(screen.getByLabelText('Sensitive question'))
+    await user.selectOptions(
+      screen.getByLabelText('Sensitive category (if applicable)'),
+      'veteranStatus'
+    )
+    await user.click(screen.getByRole('button', { name: 'Add answer' }))
+
+    const list = await screen.findByLabelText('Answer bank list')
+    expect(within(list).getByText('Are you a veteran?')).toBeInTheDocument()
+  })
 })
