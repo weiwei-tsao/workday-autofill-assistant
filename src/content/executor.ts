@@ -3,6 +3,7 @@ import type { Profile } from '../shared/types/profile'
 import type { FieldSection } from './field-dictionary'
 import type { FieldMatch } from './matcher'
 import type { AnswerBankEntry } from '../shared/types/answer-bank'
+import type { PrivacySettings } from '../shared/types/privacy-settings'
 
 type FillableValue = string | number | boolean
 
@@ -93,9 +94,27 @@ export function autofillSectionFields<T extends object>(
   return { detected, filled, needsReview }
 }
 
+function isAutoFillAllowed(entry: AnswerBankEntry, privacySettings: PrivacySettings): boolean {
+  if (!entry.isSensitive) return entry.autoFillEnabled
+
+  switch (entry.sensitiveCategory) {
+    case 'gender':
+      return privacySettings.allowGenderAutoFill
+    case 'race':
+      return privacySettings.allowRaceAutoFill
+    case 'disability':
+      return privacySettings.allowDisabilityAutoFill
+    case 'veteranStatus':
+      return privacySettings.allowVeteranStatusAutoFill
+    default:
+      return false
+  }
+}
+
 export function autofillAnswerBankFields(
   matches: FieldMatch[],
-  answerBank: AnswerBankEntry[]
+  answerBank: AnswerBankEntry[],
+  privacySettings: PrivacySettings
 ): AutofillSummary {
   let detected = 0
   let filled = 0
@@ -107,7 +126,7 @@ export function autofillAnswerBankFields(
 
     if (match.confidence === 'high') {
       const entry = answerBank.find((candidate) => candidate.questionKey === match.canonicalKey)
-      if (entry && !entry.isSensitive && entry.autoFillEnabled && hasFillableValue(entry.value)) {
+      if (entry && isAutoFillAllowed(entry, privacySettings) && hasFillableValue(entry.value)) {
         setFieldValue(match.field.element, entry.value)
         filled++
       }

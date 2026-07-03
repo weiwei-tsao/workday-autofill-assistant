@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { Profile } from '../shared/types/profile'
 import type { WorkExperience } from '../shared/types/work-experience'
 import type { AnswerBankEntry } from '../shared/types/answer-bank'
+import type { PrivacySettings } from '../shared/types/privacy-settings'
 import { autofillFields, autofillSectionFields, autofillAnswerBankFields } from './executor'
 import { matchFields } from './matcher'
 import { scanFields } from './scanner'
@@ -153,6 +154,19 @@ describe('autofillSectionFields', () => {
 })
 
 describe('autofillAnswerBankFields', () => {
+  const allowAllPrivacySettings: PrivacySettings = {
+    allowGenderAutoFill: true,
+    allowRaceAutoFill: true,
+    allowDisabilityAutoFill: true,
+    allowVeteranStatusAutoFill: true,
+  }
+  const blockAllPrivacySettings: PrivacySettings = {
+    allowGenderAutoFill: false,
+    allowRaceAutoFill: false,
+    allowDisabilityAutoFill: false,
+    allowVeteranStatusAutoFill: false,
+  }
+
   it('fills a high-confidence match with a non-sensitive, auto-fill-enabled answer', () => {
     document.body.innerHTML =
       '<label for="salary">Desired salary</label><input id="salary" name="desiredSalary" />'
@@ -169,13 +183,13 @@ describe('autofillAnswerBankFields', () => {
       },
     ]
 
-    const summary = autofillAnswerBankFields(matches, answerBank)
+    const summary = autofillAnswerBankFields(matches, answerBank, blockAllPrivacySettings)
 
     expect((document.getElementById('salary') as HTMLInputElement).value).toBe('$120,000')
     expect(summary).toEqual({ detected: 1, filled: 1, needsReview: 0 })
   })
 
-  it('never fills a sensitive answer bank entry, even if matched at high confidence', () => {
+  it('never fills a sensitive answer bank entry with no category, regardless of privacy settings', () => {
     document.body.innerHTML =
       '<label for="sponsorship">Sponsorship</label><input id="sponsorship" name="sponsorship" />'
     const matches = matchFields(scanFields(document))
@@ -191,7 +205,7 @@ describe('autofillAnswerBankFields', () => {
       },
     ]
 
-    const summary = autofillAnswerBankFields(matches, answerBank)
+    const summary = autofillAnswerBankFields(matches, answerBank, allowAllPrivacySettings)
 
     expect((document.getElementById('sponsorship') as HTMLInputElement).value).toBe('')
     expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
@@ -213,7 +227,7 @@ describe('autofillAnswerBankFields', () => {
       },
     ]
 
-    const summary = autofillAnswerBankFields(matches, answerBank)
+    const summary = autofillAnswerBankFields(matches, answerBank, allowAllPrivacySettings)
 
     expect((document.getElementById('notice') as HTMLInputElement).value).toBe('')
     expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
@@ -224,9 +238,76 @@ describe('autofillAnswerBankFields', () => {
       '<label for="salary">Desired salary</label><input id="salary" name="desiredSalary" />'
     const matches = matchFields(scanFields(document))
 
-    const summary = autofillAnswerBankFields(matches, [])
+    const summary = autofillAnswerBankFields(matches, [], allowAllPrivacySettings)
 
     expect((document.getElementById('salary') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+
+  it('fills a sensitive entry when its category is explicitly allowed in privacy settings', () => {
+    document.body.innerHTML = '<label for="vet">Veteran status</label><input id="vet" name="veteranStatus" />'
+    const matches = matchFields(scanFields(document))
+    const answerBank: AnswerBankEntry[] = [
+      {
+        id: '1',
+        questionKey: 'veteranStatus',
+        questionLabel: 'Veteran status',
+        type: 'yesNo',
+        value: 'No',
+        isSensitive: true,
+        sensitiveCategory: 'veteranStatus',
+        autoFillEnabled: false,
+      },
+    ]
+
+    const summary = autofillAnswerBankFields(matches, answerBank, allowAllPrivacySettings)
+
+    expect((document.getElementById('vet') as HTMLInputElement).value).toBe('No')
+    expect(summary).toEqual({ detected: 1, filled: 1, needsReview: 0 })
+  })
+
+  it('does not fill a sensitive entry when its category is not allowed in privacy settings', () => {
+    document.body.innerHTML = '<label for="vet">Veteran status</label><input id="vet" name="veteranStatus" />'
+    const matches = matchFields(scanFields(document))
+    const answerBank: AnswerBankEntry[] = [
+      {
+        id: '1',
+        questionKey: 'veteranStatus',
+        questionLabel: 'Veteran status',
+        type: 'yesNo',
+        value: 'No',
+        isSensitive: true,
+        sensitiveCategory: 'veteranStatus',
+        autoFillEnabled: false,
+      },
+    ]
+
+    const summary = autofillAnswerBankFields(matches, answerBank, blockAllPrivacySettings)
+
+    expect((document.getElementById('vet') as HTMLInputElement).value).toBe('')
+    expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
+  })
+
+  it('never fills a sensitive entry tagged "other", even when all privacy settings are enabled', () => {
+    document.body.innerHTML =
+      '<label for="disability">Disability status</label><input id="disability" name="disabilityStatus" />'
+    const matches = matchFields(scanFields(document))
+    const answerBank: AnswerBankEntry[] = [
+      {
+        id: '1',
+        questionKey: 'disabilityStatus',
+        questionLabel: 'Disability status',
+        type: 'yesNo',
+        value: 'No',
+        isSensitive: true,
+        sensitiveCategory: 'other',
+        autoFillEnabled: false,
+      },
+    ]
+
+    const summary = autofillAnswerBankFields(matches, answerBank, allowAllPrivacySettings)
+
+    expect((document.getElementById('disability') as HTMLInputElement).value).toBe('')
     expect(summary).toEqual({ detected: 1, filled: 0, needsReview: 0 })
   })
 })
