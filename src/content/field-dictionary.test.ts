@@ -77,8 +77,8 @@ describe('FIELD_DICTIONARY', () => {
     expect(byKey('workAuthorization')?.section).toBeUndefined()
   })
 
-  it('exports COMMON_QUESTION_KEYS containing exactly the 8 common-question canonical keys', () => {
-    expect(COMMON_QUESTION_KEYS.size).toBe(8)
+  it('exports COMMON_QUESTION_KEYS containing exactly the 12 common-question canonical keys', () => {
+    expect(COMMON_QUESTION_KEYS.size).toBe(12)
     expect(COMMON_QUESTION_KEYS.has('workAuthorization')).toBe(true)
     expect(COMMON_QUESTION_KEYS.has('sponsorship')).toBe(true)
     expect(COMMON_QUESTION_KEYS.has('relocate')).toBe(true)
@@ -88,5 +88,24 @@ describe('FIELD_DICTIONARY', () => {
     expect(COMMON_QUESTION_KEYS.has('yearsOfExperience')).toBe(true)
     expect(COMMON_QUESTION_KEYS.has('whyInterested')).toBe(true)
     expect(COMMON_QUESTION_KEYS.has('firstName')).toBe(false)
+  })
+
+  it('tags demographic question fields with canonical keys and leaves them section-agnostic', () => {
+    const byKey = (key: string) => FIELD_DICTIONARY.find((entry) => entry.canonicalKey === key)
+
+    expect(byKey('gender')?.patterns.some((p) => p.test('Gender'))).toBe(true)
+    expect(byKey('raceEthnicity')?.patterns.some((p) => p.test('Race / Ethnicity'))).toBe(true)
+    expect(byKey('disabilityStatus')?.patterns.some((p) => p.test('Disability status'))).toBe(
+      true
+    )
+    expect(byKey('veteranStatus')?.patterns.some((p) => p.test('Veteran status'))).toBe(true)
+    expect(byKey('gender')?.section).toBeUndefined()
+  })
+
+  it('adds the demographic keys to COMMON_QUESTION_KEYS', () => {
+    expect(COMMON_QUESTION_KEYS.has('gender')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('raceEthnicity')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('disabilityStatus')).toBe(true)
+    expect(COMMON_QUESTION_KEYS.has('veteranStatus')).toBe(true)
   })
 })

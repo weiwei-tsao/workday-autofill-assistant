@@ -78,6 +78,12 @@ export const FIELD_DICTIONARY: FieldDictionaryEntry[] = [
   { canonicalKey: 'noticePeriod', patterns: [/notice\s*period/i, /earliest\s*start\s*date/i] },
   { canonicalKey: 'yearsOfExperience', patterns: [/years?\s*of\s*experience/i] },
   { canonicalKey: 'whyInterested', patterns: [/why.*interested/i] },
+
+  // Demographic / EEO-style questions — section-agnostic, gated by Privacy Settings
+  { canonicalKey: 'gender', patterns: [/\bgender\b/i] },
+  { canonicalKey: 'raceEthnicity', patterns: [/\brace\b/i, /ethnicity/i] },
+  { canonicalKey: 'disabilityStatus', patterns: [/disability/i] },
+  { canonicalKey: 'veteranStatus', patterns: [/veteran/i] },
 ]
 
 export const COMMON_QUESTION_KEYS = new Set<string>([
@@ -89,4 +95,8 @@ export const COMMON_QUESTION_KEYS = new Set<string>([
   'noticePeriod',
   'yearsOfExperience',
   'whyInterested',
+  'gender',
+  'raceEthnicity',
+  'disabilityStatus',
+  'veteranStatus',
 ])
