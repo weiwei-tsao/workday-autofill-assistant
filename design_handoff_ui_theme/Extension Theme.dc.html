@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background-color: #F6F4F1; background-image: radial-gradient(#DDD8D0 1px, transparent 1px); background-size: 22px 22px; font-family: 'Instrument Sans', Helvetica, Arial, sans-serif; color: #1C1A17; }
+</style>
+</helmet>
+
+<section style="padding: 48px 48px 8px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start;">
+
+  <!-- ============ 2a · PERSONAL INFO ============ -->
+  <div id="2a" style="width: 900px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#2a" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">2a</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">options · personal info</span>
+    </div>
+    <div data-screen-label="Personal info" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Personal info</h2>
+          <span style="font-size: 13px; color: #6E6961;">Fills Workday contact, address, and eligibility fields.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">saved 2 min ago</span>
+          <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 10px; padding: 10px 18px; cursor: pointer;">Save changes</button>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 22px 24px; display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Name</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">First name</label>
+              <input value="Aliah" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Last name</label>
+              <input value="Lane" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #9B958C;">Preferred name <span style="font-weight: 400;">· optional</span></label>
+              <input placeholder="—" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #F1EEE9; padding-top: 20px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Contact</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Email</label>
+              <input value="aliah.lane@gmail.com" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Phone</label>
+              <input value="+1 (415) 555-0134" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #F1EEE9; padding-top: 20px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Address</span>
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Country</label>
+              <input value="United States" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Address line 1</label>
+              <input value="2210 Fillmore Street, Apt 4" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">City</label>
+              <input value="San Francisco" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Province / State</label>
+              <input value="California" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Postal code</label>
+              <input value="94115" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #F1EEE9; padding-top: 20px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Links</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">LinkedIn</label>
+              <input value="linkedin.com/in/aliahlane" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">GitHub</label>
+              <input value="github.com/aliahlane" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #9B958C;">Portfolio <span style="font-weight: 400;">· optional</span></label>
+              <input placeholder="—" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #F1EEE9; padding-top: 20px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Work eligibility</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; align-items: end;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Work authorization status</label>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px;"><span>Authorized to work</span><span style="color: #9B958C; font-size: 10px;">▾</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Earliest start date</label>
+              <input value="2026-08-01" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px;">
+              <span style="font-size: 13px; font-weight: 500;">Requires sponsorship</span>
+              <span style="width: 34px; height: 20px; border-radius: 999px; background: #DDD8D0; position: relative; display: inline-block; flex-shrink: 0;"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2b · WORK EXPERIENCE ============ -->
+  <div id="2b" style="width: 980px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#2b" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">2b</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">options · work experience</span>
+    </div>
+    <div data-screen-label="Work experience" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Work experience</h2>
+          <span style="font-size: 13px; color: #6E6961;">Entries are filled in order — newest first.</span>
+        </div>
+        <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #FFFFFF; color: #1C1A17; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 18px; cursor: pointer;">+ Add experience</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px; align-items: start;">
+        <!-- entry list -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="background: #FFFFFF; border: 2px solid #6C55C8; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 14px; font-weight: 600;">Senior Product Designer</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6C55C8; background: #EDE8F9; border-radius: 6px; padding: 2px 8px;">editing</span>
+            </div>
+            <span style="font-size: 13px; color: #45413B;">Northwind · Remote, US</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">Mar 2022 — present</span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 14px; font-weight: 600;">Product Designer</span>
+              <span style="display: flex; gap: 12px;">
+                <span style="font-size: 12px; font-weight: 600; color: #6E6961; cursor: pointer;">Edit</span>
+                <span style="font-size: 12px; font-weight: 600; color: #C4453C; cursor: pointer;">Delete</span>
+              </span>
+            </div>
+            <span style="font-size: 13px; color: #45413B;">Globex · Austin, TX</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">Jun 2019 — Feb 2022</span>
+          </div>
+          <div style="border: 1px dashed #C9C3BA; border-radius: 14px; padding: 14px; text-align: center; font-size: 12px; font-weight: 500; color: #9B958C;">Drag to reorder — top entry fills first</div>
+        </div>
+
+        <!-- edit form -->
+        <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Company name</label>
+              <input value="Northwind" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Job title</label>
+              <input value="Senior Product Designer" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12px; font-weight: 600; color: #9B958C;">Location <span style="font-weight: 400;">· optional</span></label>
+            <input value="Remote, US" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; box-sizing: border-box;">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #45413B;">Start</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px;"><span>Mar</span><span style="color: #9B958C; font-size: 10px;">▾</span></div>
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px;"><span>2022</span><span style="color: #9B958C; font-size: 10px;">▾</span></div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; font-weight: 600; color: #9B958C;">End</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #C9C3BA; background: #F6F4F1; border: 1px solid #EAE6E0; border-radius: 10px; padding: 10px 12px;"><span>—</span></div>
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #C9C3BA; background: #F6F4F1; border: 1px solid #EAE6E0; border-radius: 10px; padding: 10px 12px;"><span>—</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 34px; height: 20px; border-radius: 999px; background: #1E8E5A; position: relative; display: inline-block; flex-shrink: 0;"><span style="position: absolute; top: 2px; left: 16px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+            <span style="font-size: 13px; font-weight: 500;">I currently work here</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12px; font-weight: 600; color: #9B958C;">Description <span style="font-weight: 400;">· optional</span></label>
+            <div style="font-size: 13px; color: #45413B; line-height: 1.5; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; min-height: 64px;">Led design for the checkout platform team; shipped a redesigned payment flow that raised conversion 12%.</div>
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #F1EEE9; padding-top: 14px;">
+            <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #FFFFFF; color: #6E6961; border: 1px solid #DDD8D0; border-radius: 10px; padding: 9px 16px; cursor: pointer;">Cancel</button>
+            <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 10px; padding: 9px 16px; cursor: pointer;">Save entry</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2c · ANSWER BANK ============ -->
+  <div id="2c" style="width: 860px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#2c" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">2c</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">options · answer bank</span>
+    </div>
+    <div data-screen-label="Answer bank" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Answer bank</h2>
+          <span style="font-size: 13px; color: #6E6961;">Reusable answers for the questions every application asks.</span>
+        </div>
+        <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 10px; padding: 10px 18px; cursor: pointer;">+ Add answer</button>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 2.6fr 0.9fr 1.4fr 1.1fr; gap: 12px; padding: 12px 20px; border-bottom: 1px solid #EAE6E0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">
+          <span>Question</span><span>Type</span><span>Answer</span><span>Auto-fill</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2.6fr 0.9fr 1.4fr 1.1fr; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #F1EEE9; align-items: center;">
+          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Are you legally authorized to work in the US?</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">workAuthorization</span></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961; border: 1px solid #EAE6E0; border-radius: 6px; padding: 2px 8px; justify-self: start;">yesNo</span>
+          <span style="font-size: 13px; color: #45413B;">Yes</span>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #1E8E5A; position: relative; display: inline-block;"><span style="position: absolute; top: 2px; left: 16px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2.6fr 0.9fr 1.4fr 1.1fr; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #F1EEE9; align-items: center;">
+          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Have you previously worked for this company?</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">previousEmployee</span></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961; border: 1px solid #EAE6E0; border-radius: 6px; padding: 2px 8px; justify-self: start;">yesNo</span>
+          <span style="font-size: 13px; color: #45413B;">No</span>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #1E8E5A; position: relative; display: inline-block;"><span style="position: absolute; top: 2px; left: 16px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2.6fr 0.9fr 1.4fr 1.1fr; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #F1EEE9; align-items: center;">
+          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">How did you hear about us?</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">source</span></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961; border: 1px solid #EAE6E0; border-radius: 6px; padding: 2px 8px; justify-self: start;">select</span>
+          <span style="font-size: 13px; color: #45413B;">LinkedIn</span>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #1E8E5A; position: relative; display: inline-block;"><span style="position: absolute; top: 2px; left: 16px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2.6fr 0.9fr 1.4fr 1.1fr; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #F1EEE9; align-items: center;">
+          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Desired salary</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">desiredSalary</span></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961; border: 1px solid #EAE6E0; border-radius: 6px; padding: 2px 8px; justify-self: start;">text</span>
+          <span style="font-size: 13px; color: #45413B;">$140,000</span>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #DDD8D0; position: relative; display: inline-block;"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2.6fr 0.9fr 1.4fr 1.1fr; gap: 12px; padding: 14px 20px; align-items: center; background: #FBF7EE;">
+          <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Gender</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">gender</span></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961; border: 1px solid #EAE6E0; border-radius: 6px; padding: 2px 8px; justify-self: start;">select</span>
+          <span style="font-size: 13px; color: #45413B;">Prefer not to say</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAD9B0; background: #FFFFFF; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 500; justify-self: start;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B98900;"></span>Sensitive · locked</span>
+        </div>
+      </div>
+      <span style="font-size: 12px; color: #6E6961;">Sensitive answers are never auto-filled. Manage exceptions in <a href="#2d" style="color: #6C55C8; font-weight: 600; text-decoration: none;">Privacy settings</a>.</span>
+    </div>
+  </div>
+
+  <!-- ============ 2d · PRIVACY + IMPORT/EXPORT ============ -->
+  <div id="2d" style="width: 560px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#2d" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">2d</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">options · privacy &amp; data</span>
+    </div>
+
+    <div data-screen-label="Privacy settings" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em;">Privacy settings</h2>
+        <span style="font-size: 13px; color: #6E6961;">Sensitive categories are off by default and never auto-filled.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; overflow: hidden;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #F1EEE9;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Gender</span><span style="font-size: 12px; color: #6E6961;">Allow auto-fill of your saved gender answer</span></div>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #1E8E5A; position: relative; display: inline-block; flex-shrink: 0;"><span style="position: absolute; top: 2px; left: 16px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #F1EEE9;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Race / ethnicity</span><span style="font-size: 12px; color: #6E6961;">Off — highlighted for manual review instead</span></div>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #DDD8D0; position: relative; display: inline-block; flex-shrink: 0;"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #F1EEE9;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Disability status</span><span style="font-size: 12px; color: #6E6961;">Off — highlighted for manual review instead</span></div>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #DDD8D0; position: relative; display: inline-block; flex-shrink: 0;"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600;">Veteran status</span><span style="font-size: 12px; color: #6E6961;">Off — highlighted for manual review instead</span></div>
+          <span style="width: 34px; height: 20px; border-radius: 999px; background: #DDD8D0; position: relative; display: inline-block; flex-shrink: 0;"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,26,23,0.2);"></span></span>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="Import / Export" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em;">Import / Export</h2>
+        <span style="font-size: 13px; color: #6E6961;">Your data lives in this browser. Take it with you.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 13px; font-weight: 600;">Export profile</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">autofill-bundle.json · last export 28 Jun 2026</span>
+        </div>
+        <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 10px; padding: 9px 16px; cursor: pointer; flex-shrink: 0;">Export JSON</button>
+      </div>
+      <div style="border: 1px dashed #C9C3BA; background: #FFFFFF; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;">
+        <span style="font-size: 13px; font-weight: 600;">Drop a bundle here to import</span>
+        <span style="font-size: 12px; color: #6E6961;">or <span style="color: #6C55C8; font-weight: 600; cursor: pointer;">browse files</span> — you'll confirm before anything is replaced</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2e · SIDE PANEL STATES ============ -->
+  <div id="2e" style="width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#2e" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">2e</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">side panel · other states</span>
+    </div>
+
+    <div data-screen-label="Side panel — checking" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #EAE6E0; background: #FFFFFF;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 15px; font-weight: 700; letter-spacing: -0.02em;">autofill</span>
+          <span style="display: flex;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #2AA79B;"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #6C55C8; margin-left: -3px;"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #E4B33C; margin-left: -3px;"></span></span>
+        </div>
+      </div>
+      <div style="padding: 18px; display: flex; align-items: center; gap: 10px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #C9C3BA;"></span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">checking current page…</span>
+      </div>
+    </div>
+
+    <div data-screen-label="Side panel — not Workday" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #EAE6E0; background: #FFFFFF;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 15px; font-weight: 700; letter-spacing: -0.02em;">autofill</span>
+          <span style="display: flex;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #2AA79B;"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #6C55C8; margin-left: -3px;"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #E4B33C; margin-left: -3px;"></span></span>
+        </div>
+      </div>
+      <div style="padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #C9C3BA;"></span>Not a Workday page</span>
+          <span style="font-size: 12px; color: #6E6961; line-height: 1.5;">Open a job application on a <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">*.myworkdayjobs.com</span> page and this panel will wake up.</span>
+        </div>
+        <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #FFFFFF; color: #1C1A17; border: 1px solid #DDD8D0; border-radius: 12px; padding: 12px; cursor: pointer;">Open profile</button>
+      </div>
+    </div>
+
+    <div data-screen-label="Side panel — needs review" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #EAE6E0; background: #FFFFFF;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 15px; font-weight: 700; letter-spacing: -0.02em;">autofill</span>
+          <span style="display: flex;"><span style="width: 9px; height: 9px; border-radius: 50%; background: #2AA79B;"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #6C55C8; margin-left: -3px;"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #E4B33C; margin-left: -3px;"></span></span>
+        </div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAD9B0; background: #FBF7EE; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B98900;"></span>2 to review</span>
+      </div>
+      <div style="padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Needs your review</span>
+        <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B98900;"></span>Phone — device type</span>
+          <span style="font-size: 12px; color: #6E6961;">Workday uses a dropdown here; pick Mobile or Landline on the page.</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B98900;"></span>How did you hear about us?</span>
+          <span style="font-size: 12px; color: #6E6961;">This company's option list doesn't include your saved answer "LinkedIn".</span>
+        </div>
+        <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 12px; padding: 12px; cursor: pointer;">Highlight fields on page</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section style="padding: 8px 48px 48px; display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start;">
+
+  <!-- ============ 1a · THEME FOUNDATION ============ -->
+  <div id="1a" style="width: 560px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#1a" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">1a</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">theme foundation</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 28px; box-shadow: 0 1px 2px rgba(28,26,23,0.04);">
+
+      <!-- wordmark -->
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 26px; font-weight: 700; letter-spacing: -0.02em;">autofill</span>
+          <span style="display: flex;">
+            <span style="width: 16px; height: 16px; border-radius: 50%; background: #2AA79B;"></span>
+            <span style="width: 16px; height: 16px; border-radius: 50%; background: #6C55C8; margin-left: -6px;"></span>
+            <span style="width: 16px; height: 16px; border-radius: 50%; background: #E4B33C; margin-left: -6px;"></span>
+          </span>
+        </div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">Workday Autofill Assistant</span>
+      </div>
+
+      <!-- palette -->
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Color</span>
+        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 52px; border-radius: 10px; background: #F6F4F1; border: 1px solid #EAE6E0;"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">#F6F4F1<br>canvas</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 52px; border-radius: 10px; background: #FFFFFF; border: 1px solid #EAE6E0;"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">#FFFFFF<br>surface</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 52px; border-radius: 10px; background: #1C1A17;"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">#1C1A17<br>ink</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 52px; border-radius: 10px; background: #6C55C8;"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">#6C55C8<br>primary</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 52px; border-radius: 10px; background: #2AA79B;"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">#2AA79B<br>teal</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 52px; border-radius: 10px; background: #E4B33C;"></div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">#E4B33C<br>amber</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- type -->
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Type</span>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em;">Instrument Sans — headings &amp; UI</span>
+          <span style="font-size: 14px; color: #45413B;">Body copy at 14px, secondary text in warm gray #6E6961.</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">JetBrains Mono — meta labels, paths, counts</span>
+        </div>
+      </div>
+
+      <!-- components -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Components</span>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 10px; padding: 10px 18px; cursor: pointer;">Autofill this page</button>
+          <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #FFFFFF; color: #1C1A17; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 18px; cursor: pointer;">Save application</button>
+          <button style="font-family: inherit; font-size: 13px; font-weight: 600; background: #6C55C8; color: #FFFFFF; border: none; border-radius: 10px; padding: 10px 18px; cursor: pointer;">Primary accent</button>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAE6E0; background: #FFFFFF; border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #1E8E5A;"></span>Filled</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAE6E0; background: #FFFFFF; border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B98900;"></span>Needs review</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAE6E0; background: #FFFFFF; border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #C4453C;"></span>Skipped</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAE6E0; background: #FFFFFF; border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #2AA79B;"></span>Saved</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; max-width: 320px;">
+          <label style="font-size: 12px; font-weight: 600; color: #45413B;">Email address</label>
+          <input value="aliah.lane@gmail.com" style="font-family: inherit; font-size: 13px; color: #1C1A17; background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 10px; padding: 10px 12px; outline: none;">
+        </div>
+
+        <div style="display: inline-flex; background: #F1EEE9; border-radius: 10px; padding: 3px; gap: 2px; align-self: flex-start;">
+          <span style="font-size: 12px; font-weight: 600; background: #FFFFFF; border-radius: 8px; padding: 6px 14px; box-shadow: 0 1px 2px rgba(28,26,23,0.08);">All</span>
+          <span style="font-size: 12px; font-weight: 500; color: #6E6961; padding: 6px 14px;">Applied</span>
+          <span style="font-size: 12px; font-weight: 500; color: #6E6961; padding: 6px 14px;">Interviewing</span>
+        </div>
+      </div>
+
+      <!-- principles -->
+      <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #EAE6E0; padding-top: 18px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Principles</span>
+        <span style="font-size: 13px; color: #45413B; line-height: 1.6;">Warm paper canvas with a dotted grid; white cards with hairline borders and 12–16px radii; ink-black primary actions; purple reserved for selection and emphasis; dot-prefixed pill badges for every status; monospace for anything machine-ish (URLs, counts, dates).</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 1b · OPTIONS PAGE ============ -->
+  <div id="1b" style="width: 1240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#1b" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">1b</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">options page · application records</span>
+    </div>
+
+    <div data-screen-label="Options page" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(28,26,23,0.08);">
+      <!-- window chrome -->
+      <div style="display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-bottom: 1px solid #EAE6E0;">
+        <span style="display: flex; gap: 7px;">
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #E5564A;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #E4B33C;"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #57B860;"></span>
+        </span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">chrome-extension://…/options.html</span>
+      </div>
+
+      <div style="display: flex; min-height: 720px;">
+        <!-- sidebar -->
+        <div style="width: 232px; border-right: 1px solid #EAE6E0; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; background: #FFFFFF;">
+          <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px 18px;">
+            <span style="font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">autofill</span>
+            <span style="display: flex;">
+              <span style="width: 11px; height: 11px; border-radius: 50%; background: #2AA79B;"></span>
+              <span style="width: 11px; height: 11px; border-radius: 50%; background: #6C55C8; margin-left: -4px;"></span>
+              <span style="width: 11px; height: 11px; border-radius: 50%; background: #E4B33C; margin-left: -4px;"></span>
+            </span>
+          </div>
+
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C; letter-spacing: 0.1em; padding: 6px 10px;">PROFILE</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #45413B;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C9C3BA;"></span>Personal info</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #45413B;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C9C3BA;"></span>Work experience</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #45413B;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C9C3BA;"></span>Education</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #45413B;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C9C3BA;"></span>Answer bank</span>
+
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C; letter-spacing: 0.1em; padding: 16px 10px 6px;">ACTIVITY</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #1C1A17; background: #F1EEE9;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #6C55C8;"></span>Application records</span>
+
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C; letter-spacing: 0.1em; padding: 16px 10px 6px;">DATA</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #45413B;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C9C3BA;"></span>Import / Export</span>
+          <span style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #45413B;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #C9C3BA;"></span>Privacy settings</span>
+
+          <div style="margin-top: auto; border-top: 1px solid #EAE6E0; padding: 14px 10px 2px; display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 13px; font-weight: 600;">Local-only storage</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">nothing leaves this device</span>
+          </div>
+        </div>
+
+        <!-- content -->
+        <div style="flex: 1; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <h2 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Application records</h2>
+              <span style="font-size: 13px; color: #6E6961;">Everything you saved with one click from Workday pages.</span>
+            </div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">26 applications saved</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <div style="display: inline-flex; background: #F1EEE9; border-radius: 10px; padding: 3px; gap: 2px;">
+              <span style="font-size: 12px; font-weight: 600; background: #FFFFFF; border-radius: 8px; padding: 6px 14px; box-shadow: 0 1px 2px rgba(28,26,23,0.08);">All</span>
+              <span style="font-size: 12px; font-weight: 500; color: #6E6961; padding: 6px 14px;">This week</span>
+              <span style="font-size: 12px; font-weight: 500; color: #6E6961; padding: 6px 14px;">This month</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; border: 1px solid #DDD8D0; background: #FFFFFF; border-radius: 10px; padding: 8px 12px; width: 240px;">
+              <span style="width: 12px; height: 12px; border: 1.5px solid #9B958C; border-radius: 50%; position: relative;"><span style="position: absolute; width: 1.5px; height: 6px; background: #9B958C; transform: rotate(-45deg); left: 12px; top: 9px;"></span></span>
+              <span style="font-size: 13px; color: #9B958C;">Search records…</span>
+            </div>
+          </div>
+
+          <!-- table -->
+          <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 2.2fr 2.4fr 1.2fr 1fr 1fr; gap: 12px; padding: 12px 20px; border-bottom: 1px solid #EAE6E0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">
+              <span>Company</span><span>Job title</span><span>Saved</span><span>Fields filled</span><span>Status</span>
+            </div>
+            <sc-for list="{{ records }}" as="r" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 2.2fr 2.4fr 1.2fr 1fr 1fr; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #F1EEE9; align-items: center;" style-hover="background: #FBFAF8;">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span style="width: 32px; height: 32px; border-radius: 8px; background: {{ r.tint }}; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #1C1A17;">{{ r.initial }}</span>
+                  <span style="display: flex; flex-direction: column;">
+                    <span style="font-size: 13px; font-weight: 600;">{{ r.company }}</span>
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9B958C;">{{ r.host }}</span>
+                  </span>
+                </span>
+                <span style="font-size: 13px; color: #45413B;">{{ r.title }}</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">{{ r.date }}</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">{{ r.filled }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #EAE6E0; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 500; justify-self: start;"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ r.dot }};"></span>{{ r.status }}</span>
+              </div>
+            </sc-for>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961;">1–6 of 26</span>
+              <span style="display: flex; gap: 8px;">
+                <span style="font-size: 12px; font-weight: 600; border: 1px solid #DDD8D0; border-radius: 8px; padding: 6px 12px; color: #9B958C;">Previous</span>
+                <span style="font-size: 12px; font-weight: 600; border: 1px solid #DDD8D0; border-radius: 8px; padding: 6px 12px;">Next</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 1c · SIDE PANEL ============ -->
+  <div id="1c" style="width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="#1c" style="text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #1C1A17; color: #F6F4F1; padding: 3px 8px; border-radius: 6px;">1c</a>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6961;">side panel · on a workday page</span>
+    </div>
+
+    <div data-screen-label="Side panel" style="background: #FDFCFB; border: 1px solid #E3DFD8; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(28,26,23,0.08); display: flex; flex-direction: column;">
+      <!-- header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid #EAE6E0; background: #FFFFFF;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 16px; font-weight: 700; letter-spacing: -0.02em;">autofill</span>
+          <span style="display: flex;">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #2AA79B;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #6C55C8; margin-left: -4px;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #E4B33C; margin-left: -4px;"></span>
+          </span>
+        </div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">v0.1.0</span>
+      </div>
+
+      <div style="padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+        <!-- detection card -->
+        <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #1E8E5A;"></span>Workday page detected</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961; word-break: break-all;">acme.wd5.myworkdayjobs.com/…/apply</span>
+        </div>
+
+        <button style="font-family: inherit; font-size: 14px; font-weight: 600; background: #1C1A17; color: #FFFFFF; border: none; border-radius: 12px; padding: 14px; cursor: pointer;" style-hover="background: #2E2B26;">Autofill this page</button>
+
+        <!-- result card -->
+        <div style="background: #FFFFFF; border: 1px solid #EAE6E0; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6961; text-transform: uppercase; letter-spacing: 0.08em;">Last run</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="border: 1px solid #EAE6E0; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">18</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">detected</span>
+            </div>
+            <div style="border: 1px solid #EAE6E0; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: #1E8E5A;">15</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">filled</span>
+            </div>
+            <div style="border: 1px solid #EAE6E0; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: #B98900;">2</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">needs review</span>
+            </div>
+            <div style="border: 1px solid #EAE6E0; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: #9B958C;">1</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E6961;">skipped</span>
+            </div>
+          </div>
+          <div style="border-top: 1px solid #F1EEE9; padding-top: 10px; font-size: 12px; color: #6E6961; line-height: 1.5;">More entries available — click “Add” on the page for the next Work Experience entry, then run Autofill again.</div>
+        </div>
+
+        <button style="font-family: inherit; font-size: 14px; font-weight: 600; background: #FFFFFF; color: #1C1A17; border: 1px solid #DDD8D0; border-radius: 12px; padding: 13px; cursor: pointer;" style-hover="background: #FBFAF8;">Save application</button>
+
+        <!-- saved toast -->
+        <div style="background: #F0F7F4; border: 1px solid #CFE5DB; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #1E8E5A; flex-shrink: 0;"></span>
+          <span style="font-size: 12px; color: #1C1A17;">Saved <strong>Senior Product Designer</strong> at <strong>Acme Corp</strong> to your records.</span>
+        </div>
+
+        <a href="#1b" style="font-size: 12px; font-weight: 600; color: #6C55C8; text-decoration: none; align-self: center; padding: 4px;">Open profile →</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const statusDot = { Saved: '#2AA79B', Applied: '#1E8E5A', 'In progress': '#B98900' };
+    const records = [
+      { company: 'Acme Corp', host: 'acme.wd5.myworkdayjobs.com', title: 'Senior Product Designer', date: '02 Jul 2026', filled: '15/18', status: 'Applied', tint: '#EDE8F9', initial: 'A' },
+      { company: 'Northwind', host: 'northwind.wd1.myworkdayjobs.com', title: 'Staff Software Engineer', date: '01 Jul 2026', filled: '17/17', status: 'Applied', tint: '#E4F3F1', initial: 'N' },
+      { company: 'Globex', host: 'globex.wd3.myworkdayjobs.com', title: 'Data Analyst II', date: '29 Jun 2026', filled: '12/16', status: 'In progress', tint: '#FAF1DC', initial: 'G' },
+      { company: 'Initech', host: 'initech.wd5.myworkdayjobs.com', title: 'Product Manager, Platform', date: '27 Jun 2026', filled: '16/18', status: 'Applied', tint: '#EDE8F9', initial: 'I' },
+      { company: 'Umbrella Labs', host: 'umbrella.wd2.myworkdayjobs.com', title: 'Machine Learning Engineer', date: '25 Jun 2026', filled: '14/19', status: 'Saved', tint: '#E4F3F1', initial: 'U' },
+      { company: 'Stark Industries', host: 'stark.wd1.myworkdayjobs.com', title: 'Frontend Engineer', date: '24 Jun 2026', filled: '18/18', status: 'Applied', tint: '#FAF1DC', initial: 'S' },
+    ].map(r => ({ ...r, dot: statusDot[r.status] }));
+    return { records };
+  }
+}
+</script>
+</body>
+</html>
