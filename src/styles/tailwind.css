@@ -1,3 +1,26 @@
+@import '@fontsource/instrument-sans/400.css';
+@import '@fontsource/instrument-sans/500.css';
+@import '@fontsource/instrument-sans/600.css';
+@import '@fontsource/instrument-sans/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #f6f4f1;
+    background-image: radial-gradient(#ddd8d0 1px, transparent 1px);
+    background-size: 22px 22px;
+    font-family: 'Instrument Sans', Helvetica, Arial, sans-serif;
+    color: #1c1a17;
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid #6c55c8;
+    outline-offset: 2px;
+  }
+}
