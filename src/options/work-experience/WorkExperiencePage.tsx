@@ -36,7 +36,7 @@ export function WorkExperiencePage() {
     resolver: zodResolver(workExperienceFormSchema),
     defaultValues: emptyValues,
   })
-  const { items, editingId, submit, startEdit, remove } = useEntityCrudForm<
+  const { items, editingId, submit, startEdit, remove, cancelEdit } = useEntityCrudForm<
     WorkExperience,
     WorkExperienceFormValues
   >('workExperiences', workExperienceRepository, emptyValues, reset)
@@ -59,7 +59,7 @@ export function WorkExperiencePage() {
         </div>
         <button
           type="button"
-          onClick={() => reset(emptyValues)}
+          onClick={() => cancelEdit()}
           className="font-sans text-[13px] font-semibold bg-surface text-ink border border-line-strong rounded-input px-[18px] py-[10px] hover:bg-[#FBFAF8] transition-colors duration-150"
         >
           + Add experience

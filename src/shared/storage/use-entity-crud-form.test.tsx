@@ -78,4 +78,33 @@ describe('useEntityCrudForm', () => {
 
     await waitFor(() => expect(result.current.items).toEqual([]))
   })
+
+  it('cancelEdit clears editing state and resets the form without touching storage', async () => {
+    const repository = createListRepository<Widget>('widgets')
+    await repository.add({ id: '1', name: 'First' })
+    const reset = vi.fn()
+    const { result } = renderHook(() =>
+      useEntityCrudForm<Widget, WidgetFormValues>('widgets', repository, { name: '' }, reset)
+    )
+
+    await waitFor(() => expect(result.current.items).toHaveLength(1))
+
+    act(() => {
+      result.current.startEdit(result.current.items[0])
+    })
+    expect(result.current.editingId).toBe('1')
+
+    act(() => {
+      result.current.cancelEdit()
+    })
+    expect(result.current.editingId).toBeNull()
+    expect(reset).toHaveBeenLastCalledWith({ name: '' })
+
+    await act(async () => {
+      await result.current.submit({ name: 'Second' })
+    })
+
+    await waitFor(() => expect(result.current.items).toHaveLength(2))
+    expect(result.current.items.find((item) => item.id === '1')).toMatchObject({ name: 'First' })
+  })
 })
