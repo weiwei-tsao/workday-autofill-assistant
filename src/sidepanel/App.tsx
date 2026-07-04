@@ -11,7 +11,7 @@ const primaryButtonClass =
   'font-sans text-[14px] font-semibold bg-ink text-white rounded-xl px-3.5 py-3.5 hover:bg-[#2E2B26] transition-colors duration-150 w-full'
 const secondaryButtonClass =
   'font-sans text-[13px] font-semibold bg-surface text-ink border border-line-strong rounded-xl px-3 py-3 hover:bg-[#FBFAF8] transition-colors duration-150 w-full'
-const cardClass = 'bg-surface border border-line rounded-card p-4 flex flex-col gap-2'
+const cardClass = 'bg-surface border border-line rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] p-4 flex flex-col gap-2'
 
 function Wordmark() {
   return (
@@ -176,7 +176,7 @@ export function App() {
             </button>
             {savedRecord && (
               <>
-                <div className="bg-[#F0F7F4] border border-[#CFE5DB] rounded-card px-3.5 py-3 flex items-center gap-2.5">
+                <div className="bg-[#F0F7F4] border border-[#CFE5DB] rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] px-3.5 py-3 flex items-center gap-2.5">
                   <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" />
                   <span className="text-[12px] text-ink">
                     Saved application for {savedRecord.jobTitle} at {savedRecord.companyName}.

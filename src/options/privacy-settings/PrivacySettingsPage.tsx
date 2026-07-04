@@ -46,14 +46,14 @@ export function PrivacySettingsPage() {
   if (isLoading) return null
 
   return (
-    <section className="bg-raised border border-[#E3DFD8] rounded-panel p-6 flex flex-col gap-4 max-w-xl">
+    <section className="bg-raised border border-[#E3DFD8] rounded-panel shadow-[0_12px_32px_rgba(28,26,23,0.08)] p-6 flex flex-col gap-4 max-w-xl">
       <div className="flex flex-col gap-1">
         <h2 className="m-0 text-[20px] font-semibold tracking-[-0.02em]">Privacy settings</h2>
         <span className="text-[13px] text-muted">
           Sensitive categories are off by default and never auto-filled.
         </span>
       </div>
-      <div className="bg-surface border border-line rounded-card overflow-hidden">
+      <div className="bg-surface border border-line rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] overflow-hidden">
         {ROWS.map((row) => {
           const isOn = settings[row.key]
           return (

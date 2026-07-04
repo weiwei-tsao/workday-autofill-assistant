@@ -65,7 +65,7 @@ export function PersonalInfoPage() {
       onSubmit={onSubmit}
       aria-label="Personal info form"
       noValidate
-      className="bg-raised border border-[#E3DFD8] rounded-panel p-7 flex flex-col gap-5 max-w-3xl"
+      className="bg-raised border border-[#E3DFD8] rounded-panel shadow-[0_12px_32px_rgba(28,26,23,0.08)] p-7 flex flex-col gap-5 max-w-3xl"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
@@ -79,7 +79,7 @@ export function PersonalInfoPage() {
         </button>
       </div>
 
-      <div className="bg-surface border border-line rounded-card p-5 flex flex-col gap-5">
+      <div className="bg-surface border border-line rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] p-5 flex flex-col gap-5">
         <div className="flex flex-col gap-3">
           <span className={sectionLabelClass}>Name</span>
           <div className="grid grid-cols-3 gap-3.5">

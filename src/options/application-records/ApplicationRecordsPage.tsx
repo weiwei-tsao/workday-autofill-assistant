@@ -58,7 +58,7 @@ export function ApplicationRecordsPage() {
         <span className="font-mono text-[12px] text-muted">{items.length} applications saved</span>
       </div>
 
-      <table aria-label="Application records list" className="w-full bg-surface border border-line rounded-card border-collapse overflow-hidden">
+      <table aria-label="Application records list" className="w-full bg-surface border border-line rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] border-collapse overflow-hidden">
         <thead>
           <tr className="border-b border-line">
             <th className="font-mono text-[11px] text-muted font-normal text-left px-5 py-3">Date</th>
@@ -102,7 +102,7 @@ export function ApplicationRecordsPage() {
       <form
         onSubmit={onSubmit}
         aria-label="Application record form"
-        className="bg-surface border border-line rounded-card p-5 flex flex-col gap-3.5"
+        className="bg-surface border border-line rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] p-5 flex flex-col gap-3.5"
       >
         <div className="flex flex-col gap-1.5">
           <label htmlFor="companyName" className={labelClass}>Company name</label>
@@ -137,7 +137,7 @@ export function ApplicationRecordsPage() {
         <div className="flex justify-end border-t border-hairline pt-3.5">
           <button
             type="submit"
-            className="font-sans text-[13px] font-semibold bg-ink text-white rounded-input px-4 py-2.5 hover:bg-[#2E2B26] transition-colors duration-150"
+            className="font-sans text-[13px] font-semibold bg-ink text-white rounded-input px-[18px] py-[10px] hover:bg-[#2E2B26] transition-colors duration-150"
           >
             {editingId ? 'Update record' : 'Add record'}
           </button>
