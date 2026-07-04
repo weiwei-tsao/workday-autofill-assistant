@@ -49,7 +49,7 @@ describe('Side Panel App', () => {
         } else if (message.type === 'AUTOFILL_PAGE') {
           sendResponse({
             type: 'AUTOFILL_RESULT',
-            summary: { detected: 3, filled: 2, needsReview: 1 },
+            summary: { detected: 3, filled: 2, needsReview: 1, skipped: 0, hasMoreEntries: false },
           })
         }
       }
@@ -61,9 +61,14 @@ describe('Side Panel App', () => {
 
     await user.click(screen.getByRole('button', { name: 'Autofill current page' }))
 
-    expect(
-      await screen.findByText('Detected 3 supported fields. Filled 2 fields. 1 fields require review.')
-    ).toBeInTheDocument()
+    const detectedStat = await screen.findByText('detected')
+    expect(detectedStat.previousElementSibling).toHaveTextContent('3')
+    const filledStat = screen.getByText('filled')
+    expect(filledStat.previousElementSibling).toHaveTextContent('2')
+    const needsReviewStat = screen.getByText('needs review')
+    expect(needsReviewStat.previousElementSibling).toHaveTextContent('1')
+    const skippedStat = screen.getByText('skipped')
+    expect(skippedStat.previousElementSibling).toHaveTextContent('0')
   })
 
   it('saves the application and displays a confirmation when the button is clicked', async () => {

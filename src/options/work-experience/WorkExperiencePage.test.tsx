@@ -40,4 +40,29 @@ describe('WorkExperiencePage', () => {
 
     expect(within(list).queryByText('Engineer at Acme')).not.toBeInTheDocument()
   })
+
+  it('clicking + Add experience while editing starts a new entry instead of overwriting the one being edited', async () => {
+    const user = userEvent.setup()
+    render(<WorkExperiencePage />)
+
+    await addSampleEntry(user)
+    const list = await screen.findByLabelText('Work experience list')
+    await user.click(within(list).getByRole('button', { name: 'Edit' }))
+    expect(screen.getByRole('button', { name: 'Update experience' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '+ Add experience' }))
+    expect(screen.getByRole('button', { name: 'Add experience' })).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('Company name'), 'Globex')
+    await user.type(screen.getByLabelText('Job title'), 'Manager')
+    await user.clear(screen.getByLabelText('Start month'))
+    await user.type(screen.getByLabelText('Start month'), '5')
+    await user.clear(screen.getByLabelText('Start year'))
+    await user.type(screen.getByLabelText('Start year'), '2022')
+    await user.click(screen.getByRole('button', { name: 'Add experience' }))
+
+    const updatedList = await screen.findByLabelText('Work experience list')
+    expect(within(updatedList).getByText('Engineer at Acme')).toBeInTheDocument()
+    expect(within(updatedList).getByText('Manager at Globex')).toBeInTheDocument()
+  })
 })

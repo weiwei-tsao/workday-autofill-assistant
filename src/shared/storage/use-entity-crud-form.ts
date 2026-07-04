@@ -33,10 +33,15 @@ export function useEntityCrudForm<T extends { id: string }, TFormValues>(
     reset(item as unknown as TFormValues)
   }
 
+  function cancelEdit() {
+    setEditingId(null)
+    reset(emptyValues)
+  }
+
   async function remove(id: string) {
     await repository.remove(id)
     await reload()
   }
 
-  return { items, editingId, submit, startEdit, remove }
+  return { items, editingId, submit, startEdit, remove, cancelEdit }
 }

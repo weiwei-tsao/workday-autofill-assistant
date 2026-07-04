@@ -7,6 +7,34 @@ import type {
 
 type Status = 'loading' | 'workday-detected' | 'not-workday'
 
+const primaryButtonClass =
+  'font-sans text-[14px] font-semibold bg-ink text-white rounded-xl px-3.5 py-3.5 hover:bg-[#2E2B26] transition-colors duration-150 w-full'
+const secondaryButtonClass =
+  'font-sans text-[13px] font-semibold bg-surface text-ink border border-line-strong rounded-xl px-3 py-3 hover:bg-[#FBFAF8] transition-colors duration-150 w-full'
+const cardClass = 'bg-surface border border-line rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] p-4 flex flex-col gap-2'
+
+function Wordmark() {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="font-sans text-[16px] font-bold tracking-[-0.02em]">autofill</span>
+      <span className="flex">
+        <span className="w-2.5 h-2.5 rounded-full bg-teal" />
+        <span className="w-2.5 h-2.5 rounded-full bg-primary -ml-1" />
+        <span className="w-2.5 h-2.5 rounded-full bg-amber -ml-1" />
+      </span>
+    </div>
+  )
+}
+
+function StatBox({ value, label, color }: { value: number; label: string; color: string }) {
+  return (
+    <div className="border border-line rounded-input px-3 py-2.5 flex flex-col gap-0.5">
+      <span className={`text-[20px] font-bold tracking-[-0.02em] ${color}`}>{value}</span>
+      <span className="font-mono text-[10px] text-muted">{label}</span>
+    </div>
+  )
+}
+
 export function App() {
   const [status, setStatus] = useState<Status>('loading')
   const [tabId, setTabId] = useState<number | undefined>(undefined)
@@ -78,41 +106,94 @@ export function App() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-semibold mb-2">Workday Autofill Assistant</h1>
-      {status === 'loading' && <p>Checking current page…</p>}
-      {status === 'not-workday' && <p>No Workday page detected.</p>}
-      {status === 'workday-detected' && (
-        <>
-          <p>Workday page detected.</p>
-          <button type="button" onClick={handleAutofill}>
-            Autofill current page
-          </button>
-          {summary && (
-            <>
-              <p>
-                Detected {summary.detected} supported fields. Filled {summary.filled} fields.
-                {summary.needsReview > 0 ? ` ${summary.needsReview} fields require review.` : ''}
-              </p>
-              {summary.skipped > 0 && <p>Some fields were skipped.</p>}
-              {summary.hasMoreEntries && (
-                <p>
-                  If Workday has additional entries to fill, click &quot;Add&quot; on the page for
-                  the next Work Experience or Education entry, then click Autofill again.
-                </p>
-              )}
-            </>
-          )}
-          <button type="button" onClick={handleSaveApplication}>
-            Save application
-          </button>
-          {savedRecord && (
-            <p>
-              Saved application for {savedRecord.jobTitle} at {savedRecord.companyName}.
-            </p>
-          )}
-        </>
-      )}
+    <div className="flex flex-col min-h-screen">
+      <div className="flex items-center justify-between px-4.5 py-3.5 border-b border-line bg-surface">
+        <Wordmark />
+        <span className="font-mono text-[10px] text-muted">v1.0.0</span>
+      </div>
+
+      <div className="p-4.5 flex flex-col gap-3.5">
+        {status === 'loading' && (
+          <div className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-[#C9C3BA]" />
+            <p className="font-mono text-[12px] text-muted m-0">Checking current page…</p>
+          </div>
+        )}
+
+        {status === 'not-workday' && (
+          <>
+            <div className={cardClass}>
+              <span className="inline-flex items-center gap-2 text-[13px] font-semibold">
+                <span className="w-2 h-2 rounded-full bg-[#C9C3BA]" />
+                No Workday page detected.
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => chrome.runtime.openOptionsPage()}
+              className={secondaryButtonClass}
+            >
+              Open profile
+            </button>
+          </>
+        )}
+
+        {status === 'workday-detected' && (
+          <>
+            <div className={cardClass}>
+              <span className="inline-flex items-center gap-2 text-[13px] font-semibold">
+                <span className="w-2 h-2 rounded-full bg-success" />
+                Workday page detected.
+              </span>
+            </div>
+            <button type="button" onClick={handleAutofill} className={primaryButtonClass}>
+              Autofill current page
+            </button>
+            {summary && (
+              <div className={cardClass}>
+                <span className="font-mono text-[11px] text-muted uppercase tracking-[0.08em]">
+                  Last run
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  <StatBox value={summary.detected} label="detected" color="text-ink" />
+                  <StatBox value={summary.filled} label="filled" color="text-success" />
+                  <StatBox value={summary.needsReview} label="needs review" color="text-warning" />
+                  <StatBox value={summary.skipped} label="skipped" color="text-faint" />
+                </div>
+                {summary.skipped > 0 && (
+                  <p className="text-[12px] text-muted m-0">Some fields were skipped.</p>
+                )}
+                {summary.hasMoreEntries && (
+                  <div className="border-t border-hairline pt-2.5 text-[12px] text-muted leading-normal">
+                    If Workday has additional entries to fill, click &quot;Add&quot; on the page for
+                    the next Work Experience or Education entry, then click Autofill again.
+                  </div>
+                )}
+              </div>
+            )}
+            <button type="button" onClick={handleSaveApplication} className={secondaryButtonClass}>
+              Save application
+            </button>
+            {savedRecord && (
+              <>
+                <div className="bg-[#F0F7F4] border border-[#CFE5DB] rounded-card shadow-[0_1px_2px_rgba(28,26,23,0.04)] px-3.5 py-3 flex items-center gap-2.5">
+                  <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" />
+                  <span className="text-[12px] text-ink">
+                    Saved application for {savedRecord.jobTitle} at {savedRecord.companyName}.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => chrome.runtime.openOptionsPage()}
+                  className="text-[12px] font-semibold text-primary self-center py-1"
+                >
+                  Open profile →
+                </button>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }
